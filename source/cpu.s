@@ -1,23 +1,17 @@
 #ifdef __arm__
 
 #include "Shared/gba_asm.h"
-#include "ARMV30MZ/ARMV30MZ.i"
-#include "ARMV30MZ/ARMV30MZmac.h"
-#include "Sphinx/Sphinx.i"
+#include "ARM6502/M6502mac.h"
+#include "KS5360/SVVideo.i"
 
-#define CYCLE_PSL (256)
+#define CYCLE_PSL (246*2)
 
 	.global run
 	.global cpuInit
 	.global cpuReset
-	.global isConsoleRunning
-	.global isConsoleSleeping
-	.global tweakCpuSpeed
 	.global frameTotal
 	.global waitMaskIn
 	.global waitMaskOut
-	.global cpu1SetIRQ
-	.global tlcs_return
 
 	.syntax unified
 	.arm
@@ -29,8 +23,8 @@
 #endif
 	.align 2
 ;@----------------------------------------------------------------------------
-run:		;@ Return after 1 frame
-	.type   run STT_FUNC
+run:		;@ Return after X frame(s)
+	.type run STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldrh r0,waitCountIn
 	add r0,r0,#1
@@ -49,36 +43,32 @@ runStart:
 	and r3,r3,r0
 	str r0,joyClick
 
-	tst r3,#0x04				;@ NDS Select?
-	blne wsvPushVolumeButton
+//	tst r3,#0x04				;@ NDS Select?
 //	tsteq r3,#0x800				;@ NDS Y?
 //	ldrne r2,=systemMemory+0xB3
 //	ldrbne r2,[r2]
 //	tstne r2,#4					;@ Power button NMI enabled?
 //	and r0,r3,#0x04				;@ NDS Select?
-//	ldr v30ptr,=V30OpTable
-//	bl V30SetNMIPin
 
-	bl refreshEMUjoypads		;@ Z=1 if communication ok
-
-	ldr v30ptr,=V30OpTable
-	ldr v30cyc,[v30ptr,#v30ICount]
-	ldr v30pc,[v30ptr,#v30IP]
-	ldr v30f,[v30ptr,#v30Flags]
+	bl refreshEMUjoypads
+skipInput:
+	ldr m6502optbl,=m6502OpTable
+	add r1,m6502optbl,#m6502Regs
+	ldmia r1,{m6502nz-m6502pc,m6502zpage}	;@ Restore M6502 state
 ;@----------------------------------------------------------------------------
-wsFrameLoop:
+svFrameLoop:
 ;@----------------------------------------------------------------------------
 	mov r0,#CYCLE_PSL
-	bl V30RunXCycles
-	ldr spxptr,=sphinx0
-	bl wsvDoScanline
+	b m6502RunXCycles
+svM6502End:
+	ldr svvptr,=ks5360_0
+	bl svDoScanline
 	cmp r0,#0
-	bne wsFrameLoop
+	bne svFrameLoop
 
 ;@----------------------------------------------------------------------------
-	str v30cyc,[v30ptr,#v30ICount]
-	str v30pc,[v30ptr,#v30IP]
-	str v30f,[v30ptr,#v30Flags]
+	add r0,m6502optbl,#m6502Regs
+	stmia r0,{m6502nz-m6502pc,m6502zpage}	;@ Save M6502 state
 	ldr r1,=fpsValue
 	ldr r0,[r1]
 	add r0,r0,#1
@@ -97,7 +87,7 @@ wsFrameLoop:
 	b runStart
 
 ;@----------------------------------------------------------------------------
-v30MZCyclesPerScanline:	.long 0
+m6502CyclesPerScanline:	.long 0
 joyClick:			.long 0
 frameTotal:			.long 0		;@ Let ui.c see frame count for savestates
 waitCountIn:		.byte 0
@@ -108,28 +98,29 @@ waitMaskOut:		.byte 0
 ;@----------------------------------------------------------------------------
 cpuInit:					;@ Called by machineInit
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{v30ptr,lr}
-	ldr v30ptr,=V30OpTable
+	stmfd sp!,{m6502optbl,lr}
+	ldr m6502optbl,=m6502OpTable
 
 	mov r0,#CYCLE_PSL
-	str r0,v30MZCyclesPerScanline
-	mov r0,v30ptr
-	bl V30Init
+	str r0,m6502CyclesPerScanline
 
-	ldmfd sp!,{v30ptr,lr}
+	ldmfd sp!,{m6502optbl,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 cpuReset:					;@ Called by loadCart/resetGame
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{v30ptr,lr}
-	ldr v30ptr,=V30OpTable
+	stmfd sp!,{m6502optbl,lr}
+	ldr m6502optbl,=m6502OpTable
 
-	mov r0,v30ptr
-	bl V30Reset
-	ldr r0,=getInterruptVector
-	str r0,[v30ptr,#v30IrqVectorFunc]
+	adr r0,svM6502End
+	str r0,[m6502optbl,#m6502NextTimeout]
+	str r0,[m6502optbl,#m6502NextTimeout_]
 
-	ldmfd sp!,{v30ptr,lr}
+	mov r0,m6502optbl
+	mov r0,#0
+	bl m6502Reset
+
+	ldmfd sp!,{m6502optbl,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 	.end

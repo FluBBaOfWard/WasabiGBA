@@ -124,9 +124,9 @@ void uiAbout() {
 
 //	drawText(gameInfoString, 9);
 
-	drawText("WasabiGBA   " EMUVERSION, 17, 0);
-	drawText("KS5360      " KS5360VERSION, 18, 0);
-	drawText("ARM6502     " ARM6502VERSION, 19, 0);
+	drawText("WasabiGBA   " EMUVERSION, 17);
+	drawText("KS5360      " KS5360VERSION, 18);
+	drawText("ARM6502     " ARM6502VERSION, 19);
 }
 
 void uiController() {
@@ -156,6 +156,11 @@ void uiSettings() {
 	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
 	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
 	drawSubItem("Autosleep: ", sleepTxt[(emuSettings>>8)&3]);
+}
+
+void uiDebug() {
+	setupSubMenu("Debug");
+	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
 }
 
 void uiLoadGame() {
@@ -220,8 +225,16 @@ void gammaSet() {
 	gGammaValue++;
 	if (gGammaValue > 4) gGammaValue=0;
 	paletteInit(gGammaValue);
-	paletteTxAll();					// Make new palette visible
 	setupMenuPalette();
+	settingsChanged = true;
+}
+
+/// Change contrast
+void contrastSet() {
+	gContrastValue++;
+	if (gContrastValue > 4) gContrastValue = 0;
+	paletteInit(gGammaValue);
+	settingsChanged = true;
 }
 
 void paletteChange() {
@@ -230,7 +243,7 @@ void paletteChange() {
 		gPaletteBank = 0;
 	}
 	monoPalInit();
-	paletteTxAll();
+	paletteInit(gGammaValue);
 	settingsChanged = true;
 }
 
@@ -242,7 +255,7 @@ void machineSet() {
 }
 
 void speedHackSet() {
-	emuSettings ^= ALLOW_SPEED_HACKS;
-	emuSettings &= ~HALF_CPU_SPEED;
-	hacksInit();
+//	emuSettings ^= ALLOW_SPEED_HACKS;
+//	emuSettings &= ~HALF_CPU_SPEED;
+//	hacksInit();
 }

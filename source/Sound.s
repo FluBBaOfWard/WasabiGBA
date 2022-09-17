@@ -1,7 +1,7 @@
 #ifdef __arm__
 
 #include "Shared/gba_asm.h"
-#include "Sphinx/Sphinx.i"
+#include "KS5360/SVVideo.i"
 
 #define MIX_LEN (528)
 

@@ -1,7 +1,7 @@
-#ifndef WSHEADER
-#define WSHEADER
+#ifndef SVHEADER
+#define SVHEADER
 
-/// WsHeader
+/// SvHeader
 typedef struct
 {
 	u8   developer;			// 0x00
@@ -13,6 +13,6 @@ typedef struct
 	u8   orientation;		// 0x06, bit 0-1 = orientation, bit 2=1.
 	u8   rtc;				// 0x07, 0x01 = RTC.
 	u16  checksum;			// 0x08 - 0x09
-} WsHeader;
+} SvHeader;
 
-#endif	// WSHEADER
+#endif	// SVHEADER

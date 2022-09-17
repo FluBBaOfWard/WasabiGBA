@@ -15,18 +15,15 @@ extern u8 gLang;
 extern u8 gPaletteBank;
 extern u8 gGameID;
 extern int sramSize;
-extern int eepromSize;
 
-extern u8 wsRAM[0x10000];
-extern u8 wsSRAM[0x8000];
-extern u8 extEepromMem[0x800];
+extern u8 svRAM[0x2000];
+extern u8 svVRAM[0x2000];
+extern u8 svSRAM[0x2000];
 extern u8 biosSpace[0x1000];
 extern u8 biosSpaceColor[0x2000];
-extern u8 biosSpaceCrystal[0x2000];
 extern u8 *romSpacePtr;
 extern void *g_BIOSBASE_BNW;
 extern void *g_BIOSBASE_COLOR;
-extern void *g_BIOSBASE_CRYSTAL;
 
 void machineInit(void);
 void loadCart(void);

@@ -6,7 +6,7 @@
 #include "Shared/AsmExtra.h"
 #include "GUI.h"
 #include "EmuFont.h"
-#include "WSBorder.h"
+#include "SVBorder.h"
 #include "Cart.h"
 #include "cpu.h"
 #include "Gfx.h"
@@ -47,22 +47,16 @@ int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 	irqInit();
 
-	irqSet( IRQ_VBLANK, myVBlank );
+	irqSet(IRQ_VBLANK, myVBlank);
 	irqEnable(IRQ_VBLANK);
 
 	setupGraphics();
 	setupGUI();
 	getInput();
 
-//	if ( g_BIOSBASE_COLOR == NULL ) {
+//	if (g_BIOSBASE_COLOR == NULL) {
 //		installHleBios(biosSpace);
 //	}
-	memset(wsEepromMem, 0, sizeof(wsEepromMem));
-	initIntEeprom(wsEepromMem);
-	memset(wscEepromMem, 0, sizeof(wscEepromMem));
-	initIntEeprom(wscEepromMem);
-	memset(scEepromMem, 0, sizeof(scEepromMem));
-	initIntEeprom(scEepromMem);
 
 	machineInit();
 	gMachine = gMachineSet;
@@ -133,7 +127,6 @@ static void setupGraphics() {
 	GFX_DISPCNT = MODE_0
 				| OBJ_1D_MAP
 				| BG0_ON
-				| BG1_ON
 				| BG2_ON
 				| BG3_ON
 				| OBJ_ON
@@ -142,9 +135,7 @@ static void setupGraphics() {
 				;
 	SetMode(GFX_DISPCNT);
 	GFX_BG0CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(0) | BG_TILE_BASE(2) | BG_PRIORITY(2);
-	GFX_BG1CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(1) | BG_TILE_BASE(2) | BG_PRIORITY(1);
 	REG_BG0CNT = GFX_BG0CNT;
-	REG_BG1CNT = GFX_BG1CNT;
 	REG_BG2CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(2) | BG_256_COLOR | BG_TILE_BASE(1) | BG_PRIORITY(3);
 
 	REG_WIN0H = 0x0000+SCREEN_WIDTH;		// Horizontal start-end
@@ -155,8 +146,8 @@ static void setupGraphics() {
 	REG_BG3CNT = TEXTBG_SIZE_512x256 | BG_MAP_BASE(6) | BG_TILE_BASE(0) | BG_PRIORITY(0);
 	menuMap = (u16 *)SCREEN_BASE_BLOCK(6);
 
-//	LZ77UnCompVram(WSBorderTiles, CHAR_BASE_ADR(1));
-//	LZ77UnCompVram(WSBorderMap, MAP_BASE_ADR(2));
+//	LZ77UnCompVram(SVBorderTiles, CHAR_BASE_ADR(1));
+//	LZ77UnCompVram(SVBorderMap, MAP_BASE_ADR(2));
 	LZ77UnCompVram(EmuFontTiles, (void *)VRAM+0x2400);
 	setupMenuPalette();
 //	setupBorderPalette();
@@ -167,5 +158,5 @@ void setupMenuPalette() {
 }
 
 void setupBorderPalette() {
-	memcpy(EMUPALBUFF, WSBorderPal, WSBorderPalLen);
+	memcpy(EMUPALBUFF, SVBorderPal, SVBorderPalLen);
 }

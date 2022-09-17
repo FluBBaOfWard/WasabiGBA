@@ -1,8 +1,7 @@
 #ifdef __arm__
 
 #include "Shared/gba_asm.h"
-#include "Equates.h"
-#include "Sphinx/Sphinx.i"
+#include "KS5360/SVVideo.i"
 
 	.global gfxInit
 	.global gfxReset
@@ -11,11 +10,10 @@
 	.global paletteTxAll
 	.global refreshGfx
 	.global endFrameGfx
-	.global v30ReadPort
-	.global v30WritePort
+	.global wsvReadIO
+	.global wsvWriteIO
+	.global updateLCDRefresh
 	.global setScreenRefresh
-	.global getInterruptVector
-	.global setInterruptExternal
 
 	.global gfxState
 	.global gGammaValue
@@ -30,7 +28,7 @@
 	.global tmpOamBuffer
 
 
-	.global sphinx0
+	.global ks5360_0
 
 
 	.syntax unified
@@ -52,7 +50,7 @@ gfxInit:					;@ Called from machineInit
 	mov r2,#0x100
 	bl memset_
 
-	bl wsVideoInit
+	bl svVideoInit
 	bl gfxWinInit
 
 	ldmfd sp!,{pc}
@@ -68,23 +66,19 @@ gfxReset:					;@ Called with CPU reset
 
 	bl gfxWinInit
 
-	ldr r0,=V30SetIRQPin
-	mov r1,#0
-	ldr r2,=wsRAM
+	ldr r0,=m6502SetNMIPin
+	ldr r1,=m6502SetIRQPin
+	ldr r2,=svVRAM
 	ldr r3,=gSOC
 	ldrb r3,[r3]
-	bl wsVideoReset0
+	bl svVideoReset0
 	bl monoPalInit
 
 	ldr r0,=gGammaValue
 	ldrb r0,[r0]
 	bl paletteInit				;@ Do palette mapping
-	bl paletteTxAll				;@ Transfer it
 
-	ldr r0,=cartOrientation
-	ldr spxptr,=sphinx0
-	ldrb r0,[r0]
-	strb r0,[spxptr,#wsvOrientation]
+	ldr svvptr,=ks5360_0
 
 	ldmfd sp!,{pc}
 
@@ -110,74 +104,86 @@ gfxWinInit:
 monoPalInit:
 	.type monoPalInit STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr spxptr,=sphinx0
-	stmfd sp!,{r4-r6,lr}
+	stmfd sp!,{r4,lr}
 	ldr r0,=gPaletteBank
 	ldrb r0,[r0]
 	adr r1,monoPalette
-	add r1,r1,r0,lsl#4
-	ldr r0,[spxptr,#paletteRAM]
-	add r0,r0,#0x180
+	add r1,r1,r0,lsl#3
+	ldr r0,=MAPPED_RGB
 
-	mov r2,#8
-	ldmia r1,{r3-r6}
-monoPalLoop:
-	stmia r0!,{r3-r6}
-	subs r2,r2,#1
-	bne monoPalLoop
+	ldmia r1,{r2-r3}
+	stmia r0!,{r2-r3}
 
-	ldmfd sp!,{r4-r6,lr}
+	ldmfd sp!,{r4,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 monoPalette:
 
-;@ Black & White
-	.short 0xFFF,0xDDD,0xBBB,0x999,0x777,0x444,0x333,0x000
-;@ Red
-	.short 0xFFF,0xCCF,0x99F,0x55F,0x11D,0x009,0x006,0x000
 ;@ Green
-	.short 0xFFF,0xBFB,0x7F7,0x3D3,0x0B0,0x080,0x050,0x000
+	.long 0x7FFF7F, 0x102010
+;@ Black & White
+	.long 0xFFFFFF, 0x000000
+;@ Red
+	.long 0xFF7F7F, 0x201010
 ;@ Blue
-	.short 0xFFF,0xFCC,0xFAA,0xF88,0xE55,0xB22,0x700,0x000
+	.long 0x8080FF, 0x000020
 ;@ Classic
-	.short 0xFFF,0xADE,0x8BD,0x59B,0x379,0x157,0x034,0x000
+	.long 0xFFDDAA, 0x221100
 ;@----------------------------------------------------------------------------
 paletteInit:		;@ r0-r3 modified.
 	.type paletteInit STT_FUNC
 ;@ Called by ui.c:  void paletteInit(gammaVal);
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r7,lr}
-	mov r1,r0					;@ Gamma value = 0 -> 4
-	mov r7,#0xF					;@ mask
-	ldr r6,=MAPPED_RGB
-	mov r4,#4096*2
-	sub r4,r4,#2
-noMap:							;@ Map 0000rrrrggggbbbb  ->  0bbbbbgggggrrrrr
-	and r0,r7,r4,lsr#1			;@ Blue ready
-	bl gPrefix
-	mov r5,r0,lsl#10
+	stmfd sp!,{r4-r9,lr}
+	mov r8,r0					;@ Gamma value = 0 -> 4
+	ldr r9,=gContrastValue
+	ldrb r9,[r9]
+	ldr r6,=EMUPALBUFF
+	ldr r7,=MAPPED_RGB
+	mov r4,#4
+noMap:							;@ Map rrrrrrrr_gggggggg_bbbbbbbb  ->  0bbbbbgggggrrrrr
+	ldrb r0,[r7,#2]				;@ Red high
+	ldrb r1,[r7,#6]				;@ Red low
+	mov r2,r9
+	bl contrastConvert
+	sub r2,r4,#1
+	bl liConvR2
+	mov r1,r8
+	bl gammaConvert
+	mov r5,r0,lsr#3
 
-	and r0,r7,r4,lsr#5			;@ Green ready
-	bl gPrefix
+	ldrb r0,[r7,#1]				;@ Green high
+	ldrb r1,[r7,#5]				;@ Green low
+	mov r2,r9
+	bl contrastConvert
+	sub r2,r4,#1
+	bl liConvR2
+	mov r1,r8
+	bl gammaConvert
+	mov r0,r0,lsr#3
 	orr r5,r5,r0,lsl#5
-	orrcs r5,r5,#0x8000
 
-	and r0,r7,r4,lsr#9			;@ Red ready
-	bl gPrefix
-	orr r5,r5,r0
+	ldrb r0,[r7,#0]				;@ Blue high
+	ldrb r1,[r7,#4]				;@ Blue low
+	mov r2,r9
+	bl contrastConvert
+	sub r2,r4,#1
+	bl liConvR2
+	mov r1,r8
+	bl gammaConvert
+	mov r0,r0,lsr#3
+	orr r5,r5,r0,lsl#10
 
-	strh r5,[r6,r4]
-	subs r4,r4,#2
-	bpl noMap
+	strh r5,[r6],#2
+	subs r4,r4,#1
+	bne noMap
 
-	ldmfd sp!,{r4-r7,lr}
+	ldmfd sp!,{r4-r9,lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
-gPrefix:
-	orr r0,r0,r0,lsl#4
-;@----------------------------------------------------------------------------
-gammaConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4),returns new value in r0=0x1F
+gammaConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4)
+				;@ returns new value in r0=0xFF
 ;@----------------------------------------------------------------------------
 	rsb r2,r0,#0x100
 	mul r3,r2,r2
@@ -186,127 +192,53 @@ gammaConvert:	;@ Takes value in r0(0-0xFF), gamma in r1(0-4),returns new value i
 	orr r0,r0,r0,lsl#8
 	mul r2,r1,r2
 	mla r0,r3,r0,r2
-	movs r0,r0,lsr#13
-
+	mov r0,r0,lsr#10
 	bx lr
+;@----------------------------------------------------------------------------
+contrastConvert:	;@ Takes values in r0 & r1(0-0xFF), contrast in r2(0-4)
+					;@ returns new values in r0&r1=0xFF
+;@----------------------------------------------------------------------------
+	movs r2,r2,lsl#8
+	addeq r2,r2,#0x80
+	add r3,r0,r1
+	sub r0,r0,r3,lsr#1
+	sub r1,r1,r3,lsr#1
+	mul r0,r2,r0
+	mul r1,r2,r1
+	mov r0,r0,asr#8+2
+	mov r1,r1,asr#8+2
+	add r0,r0,r3,lsr#1
+	add r1,r1,r3,lsr#1
+	bx lr
+
+;@----------------------------------------------------------------------------
+liConvR2:
+	orr r2,r2,r2,lsl#2
+	orr r2,r2,r2,lsl#4
+;@----------------------------------------------------------------------------
+lightConvert:	;@ Takes values in r0 & r1(0-0xFF), light in r2(0-0xFF)
+				;@ returns new values in r0=0xFF
+;@----------------------------------------------------------------------------
+	sub r3,r0,r1
+	mul r3,r2,r3
+	add r0,r1,r3,lsr#8
+	bx lr
+
 ;@----------------------------------------------------------------------------
 paletteTxAll:				;@ Called from ui.c
 	.type paletteTxAll STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr r0,=EMUPALBUFF
-	ldr spxptr,=sphinx0
+	bx lr
 ;@----------------------------------------------------------------------------
-paletteTx:					;@ r0=destination, spxptr=Sphinx
+updateLCDRefresh:
+	.type updateLCDRefresh STT_FUNC
 ;@----------------------------------------------------------------------------
-	ldr r1,=MAPPED_RGB
-	ldr r2,=0x1FFE
-	stmfd sp!,{r4-r8,lr}
-	mov r5,#0
-	ldrb r3,[spxptr,#wsvBGColor]	;@ Background palette
-	ldrb r7,[spxptr,#wsvVideoMode]
-	ands r7,r7,#0xC0			;@ Color mode?
-	beq bnwTx
-
-	ldr r4,=wsRAM+0xFE00
-	mov r3,r3,lsl#1
-	ldrh r3,[r4,r3]
-	and r3,r2,r3,lsl#1
-	ldrh r3,[r1,r3]
-	strh r3,[r0]				;@ Background palette
-	cmp r7,#0xC0				;@ 4bitplane mode?
-	bne col4Tx
-	add r6,r0,#0x100			;@ Sprite pal ofs - r5
-txLoop:
-	ldrh r3,[r4],#2
-	and r3,r2,r3,lsl#1
-	ldrh r3,[r1,r3]
-	cmp r5,#0x00
-	strhne r3,[r0,r5]			;@ Background palette
-	cmp r5,#0x100
-	strhpl r3,[r6,r5]			;@ Sprite palette
-
-	add r5,r5,#2
-	cmp r5,#0x200
-	bmi txLoop
-
-	ldmfd sp!,{r4-r8,lr}
-	bx lr
-
-col4Tx:
-col4TxLoop:
-	ldrh r3,[r4,r5]
-	and r3,r2,r3,lsl#1
-	ldrh r3,[r1,r3]
-	cmp r5,#0x00
-	strhne r3,[r0]				;@ Background palette
-	strh r3,[r0,#0x8]			;@ Opaque tiles palette
-	cmp r5,#0x100
-	addpl r6,r0,#0x100
-	strhpl r3,[r6]				;@ Sprite palette
-	strhpl r3,[r6,#0x8]			;@ Sprite palette opaque
-
-	add r0,r0,#2
-	add r5,r5,#2
-	tst r5,#6
-	bne col4TxLoop
-	add r0,r0,#0x18
-	add r5,r5,#0x18
-	cmp r5,#0x200
-	bmi col4TxLoop
-
-	ldmfd sp!,{r4-r8,lr}
-	bx lr
-
-bnwTx:
-	add r4,spxptr,#wsvPalette0
-	and r3,r3,#0x7
-	tst r3,#1
-	add r7,spxptr,#wsvColor01
-	ldrb r3,[r7,r3,lsr#1]
-	movne r3,r3,lsr#4
-	and r3,r3,#0xF
-	eor r3,r3,#0xF
-	orr r3,r3,r3,lsl#4
-	orr r3,r3,r3,lsl#4
-	and r3,r2,r3,lsl#1
-	ldrh r3,[r1,r3]
-	strh r3,[r0]				;@ Background palette
-bnwTxLoop2:
-	ldrh r6,[r4],#2
-bnwTxLoop:
-	and r3,r6,#0x7
-	mov r6,r6,lsr#4
-	tst r3,#1
-	ldrb r3,[r7,r3,lsr#1]
-	movne r3,r3,lsr#4
-	and r3,r3,#0xF
-	eor r3,r3,#0xF
-	orr r3,r3,r3,lsl#4
-	orr r3,r3,r3,lsl#4
-	and r3,r2,r3,lsl#1
-	ldrh r3,[r1,r3]
-
-	cmp r5,#0x0
-	strhne r3,[r0]				;@ Background palette
-	strh r3,[r0,#0x8]			;@ Opaque tiles palette
-	cmp r5,#0x100
-	addpl r8,r0,#0x100
-	strhpl r3,[r8]				;@ Sprite palette
-	strhpl r3,[r8,#0x8]			;@ Sprite palette opaque
-
-	add r0,r0,#2
-	add r5,r5,#2
-	tst r5,#6
-	bne bnwTxLoop
-	add r0,r0,#0x18
-	add r5,r5,#0x18
-	cmp r5,#0x200
-	bmi bnwTxLoop2
-
-	ldmfd sp!,{r4-r8,lr}
-	bx lr
+	ldr svvptr,=ks5360_0
+	ldrb r1,[svvptr,#svvLCDVSize]
+	b svRefW
 ;@----------------------------------------------------------------------------
 setScreenRefresh:			;@ r0 in = WS scan line count.
+	.type setScreenRefresh STT_FUNC
 ;@----------------------------------------------------------------------------
 	bx lr
 
@@ -325,10 +257,10 @@ vblIrqHandler:
 
 	add r1,r6,#REG_DMA0SAD
 	ldr r2,dmaScroll			;@ Setup DMA buffer for scrolling:
-	ldmia r2!,{r4-r5}			;@ Read
+	ldmia r2!,{r4}				;@ Read
 	add r3,r6,#REG_BG0HOFS		;@ DMA0 always goes here
-	stmia r3,{r4-r5}			;@ Set 1st value manually, HBL is AFTER 1st line
-	ldr r4,=0xA6600002			;@ noIRQ hblank 32bit repeat incsrc inc_reloaddst, 2 word
+	stmia r3,{r4}				;@ Set 1st value manually, HBL is AFTER 1st line
+	ldr r4,=0xA6600001			;@ noIRQ hblank 32bit repeat incsrc inc_reloaddst, 1 word
 	stmia r1,{r2-r4}			;@ DMA0 go
 
 	add r1,r6,#REG_DMA3SAD
@@ -345,26 +277,21 @@ vblIrqHandler:
 	orr r4,r4,#0x100			;@ 256 words (1024 bytes)
 	stmia r1,{r2-r4}			;@ DMA3 go
 
-	adr spxptr,sphinx0
-	ldr r0,=GFX_BG0CNT
-	ldr r0,[r0]
+	adr svvptr,ks5360_0
+	ldr r0,GFX_BG0CNT
 	str r0,[r6,#REG_BG0CNT]
-	ldr r0,=GFX_DISPCNT
-	ldr r0,[r0]
-	ldrb r1,[spxptr,#wsvDispCtrl]
-	tst r1,#0x01
-	biceq r0,r0,#0x0100			;@ Turn off bg
-	tst r1,#0x02
-	biceq r0,r0,#0x0200			;@ Turn off fg
-	tst r1,#0x04
-	biceq r0,r0,#0x1000			;@ Turn off sprites
-	tst r1,#0x20				;@ Win for FG on?
-	biceq r0,r0,#0x2000			;@ Turn off fg-window
+	ldr r0,GFX_DISPCNT
+	ldrb r1,[svvptr,#wsvLatchedDispCtrl]
+//	tst r1,#0x01
+//	biceq r0,r0,#0x0100			;@ Turn off Bg
+//	biceq r0,r0,#0x0200			;@ Turn off Fg
+//	tst r1,#0x20				;@ Win for Fg on?
+//	biceq r0,r0,#0x2000			;@ Turn off Fg-Window
 	ldrb r2,gGfxMask
 	bic r0,r0,r2,lsl#8
 	strh r0,[r6,#REG_DISPCNT]
 
-	ldr r0,[spxptr,#windowData]
+	ldr r0,[svvptr,#windowData]
 	strh r0,[r6,#REG_WIN0H]
 	mov r0,r0,lsr#16
 	strh r0,[r6,#REG_WIN0V]
@@ -380,9 +307,8 @@ vblIrqHandler:
 	ldrb r0,frameDone
 	cmp r0,#0
 	beq nothingNew
-//	bl wsvConvertTiles
-	mov r0,#BG_GFX
-	bl wsvConvertTileMaps
+	ldr r0,=BG_GFX+0x8000
+	bl svConvertScreen
 	mov r0,#0
 	strb r0,frameDone
 nothingNew:
@@ -397,39 +323,33 @@ nothingNew:
 refreshGfx:					;@ Called from C when changing scaling.
 	.type refreshGfx STT_FUNC
 ;@----------------------------------------------------------------------------
-	adr spxptr,sphinx0
+	adr svvptr,ks5360_0
 ;@----------------------------------------------------------------------------
-endFrameGfx:				;@ Called just before screen end (~line 143)	(r0-r3 safe to use)
+endFrameGfx:				;@ Called just before screen end (~line 159)	(r0-r3 safe to use)
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{lr}
+	stmfd sp!,{r3,lr}
 
 	ldr r0,tmpScroll			;@ Destination
 	bl copyScrollValues
-	ldr r0,tmpOamBuffer			;@ Destination
-	bl wsvConvertSprites
-	bl paletteTxAll
 ;@--------------------------
 
-	ldr r0,dmaOamBuffer
-	ldr r1,tmpOamBuffer
-	str r0,tmpOamBuffer
-	str r1,dmaOamBuffer
+	ldr r0,tmpOamBuffer
+	ldr r1,dmaOamBuffer
+	str r0,dmaOamBuffer
+	str r1,tmpOamBuffer
 
-	ldr r0,dmaScroll
-	ldr r1,tmpScroll
-	str r0,tmpScroll
-	str r1,dmaScroll
+	ldr r0,tmpScroll
+	ldr r1,dmaScroll
+	str r0,dmaScroll
+	str r1,tmpScroll
 
 	mov r0,#1
 	strb r0,frameDone
-	bl updateSlowIO				;@ RTC/Alarm and more
 
-	ldmfd sp!,{lr}
+	ldmfd sp!,{r3,lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
-DMA0BUFPTR:		.long 0
-
 tmpOamBuffer:	.long OAM_BUFFER1
 dmaOamBuffer:	.long OAM_BUFFER2
 tmpScroll:		.long SCROLLBUFF1
@@ -444,41 +364,42 @@ gGfxMask:		.byte 0
 frameDone:		.byte 0
 				.byte 0,0
 ;@----------------------------------------------------------------------------
-wsVideoReset0:		;@ r0=periodicIrqFunc, r1=, r2=frame2IrqFunc, r3=model
+svVideoReset0:		;@ r0=NmiFunc, r1=IrqFunc, r2=ram+LUTs, r3=model
 ;@----------------------------------------------------------------------------
-	adr spxptr,sphinx0
-	b wsVideoReset
+	adr svvptr,ks5360_0
+	b svVideoReset
 ;@----------------------------------------------------------------------------
-v30ReadPort:
-	.type v30ReadPort STT_FUNC
+wsvReadIO:
+	.type wsvReadIO STT_FUNC
 ;@----------------------------------------------------------------------------
-	adr spxptr,sphinx0
-	b wsvRead
+	stmfd sp!,{r3,r12,lr}
+	mov r0,r12
+	adr svvptr,ks5360_0
+	bl svRead
+	ldmfd sp!,{r3,r12,lr}
+	bx lr
 ;@----------------------------------------------------------------------------
-v30WritePort:
-	.type v30WritePort STT_FUNC
+wsvWriteIO:
+	.type wsvWriteIO STT_FUNC
 ;@----------------------------------------------------------------------------
-	adr spxptr,sphinx0
-	b wsvWrite
+	stmfd sp!,{r3,r12,lr}
+	mov r1,r0
+	mov r0,r12
+	adr svvptr,ks5360_0
+	bl svWrite
+	ldmfd sp!,{r3,r12,lr}
+	bx lr
 ;@----------------------------------------------------------------------------
-getInterruptVector:
+ks5360_0:
+	.space ks5360Size
 ;@----------------------------------------------------------------------------
-	adr spxptr,sphinx0
-	b wsvGetInterruptVector
-;@----------------------------------------------------------------------------
-setInterruptExternal:		;@ r0=irq state
-;@----------------------------------------------------------------------------
-	adr spxptr,sphinx0
-	b wsvSetInterruptExternal
-sphinx0:
-	.space sphinxSize
-;@----------------------------------------------------------------------------
-	.section .ewram, "ax"
 
 gfxState:
 	.long 0
 	.long 0
-	.long 0,0,0
+	.long 0,0
+lcdSkip:
+	.long 0
 
 GFX_DISPCNT:
 	.long 0
