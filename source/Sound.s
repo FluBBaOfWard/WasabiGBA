@@ -185,7 +185,6 @@ soundLatch:
 
 	.section .sbss
 	.align 2
-//	.space ymSize
 FREQTBL:
 	.space 1024*2
 WAVBUFFER:

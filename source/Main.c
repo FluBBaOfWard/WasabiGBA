@@ -158,5 +158,5 @@ void setupMenuPalette() {
 }
 
 void setupBorderPalette() {
-	memcpy(EMUPALBUFF, SVBorderPal, SVBorderPalLen);
+	memcpy(&EMUPALBUFF[0x10], SVBorderPal, SVBorderPalLen);
 }
