@@ -49,9 +49,9 @@
 		9CDABAC028D5E0F2005B888E /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9CDABAC128D5E0F2005B888E /* SVAudio.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = SVAudio.s; sourceTree = "<group>"; };
 		9CDABAC228D5E0F2005B888E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		9CDABAC328D5E0F2005B888E /* SVVideo.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = SVVideo.i; sourceTree = "<group>"; };
+		9CDABAC328D5E0F2005B888E /* KS5360.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = KS5360.i; sourceTree = "<group>"; };
 		9CDABAC428D5E0F2005B888E /* SVVideo.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = SVVideo.s; sourceTree = "<group>"; };
-		9CDABAC528D5E0F2005B888E /* SVVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVVideo.h; sourceTree = "<group>"; };
+		9CDABAC528D5E0F2005B888E /* KS5360.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KS5360.h; sourceTree = "<group>"; };
 		9CDABAC628D5E0F2005B888E /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		9CDABAC728D5E0F2005B888E /* KS5360_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = KS5360_todo.txt; sourceTree = "<group>"; };
 		9CDABAC828D5E224005B888E /* SVBorder.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SVBorder.grit; sourceTree = "<group>"; };
@@ -128,8 +128,8 @@
 				9CDABAC228D5E0F2005B888E /* README.md */,
 				9CDABAC628D5E0F2005B888E /* History.txt */,
 				9CDABAC028D5E0F2005B888E /* Version.h */,
-				9CDABAC528D5E0F2005B888E /* SVVideo.h */,
-				9CDABAC328D5E0F2005B888E /* SVVideo.i */,
+				9CDABAC528D5E0F2005B888E /* KS5360.h */,
+				9CDABAC328D5E0F2005B888E /* KS5360.i */,
 				9CDABAC428D5E0F2005B888E /* SVVideo.s */,
 				9CDABAC128D5E0F2005B888E /* SVAudio.s */,
 			);

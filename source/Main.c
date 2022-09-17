@@ -134,7 +134,7 @@ static void setupGraphics() {
 				| WIN1_ON
 				;
 	SetMode(GFX_DISPCNT);
-	GFX_BG0CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(0) | BG_TILE_BASE(2) | BG_PRIORITY(2);
+	GFX_BG0CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(0) | BG_16_COLOR | BG_TILE_BASE(2) | BG_PRIORITY(2);
 	REG_BG0CNT = GFX_BG0CNT;
 	REG_BG2CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(2) | BG_256_COLOR | BG_TILE_BASE(1) | BG_PRIORITY(3);
 
@@ -146,11 +146,11 @@ static void setupGraphics() {
 	REG_BG3CNT = TEXTBG_SIZE_512x256 | BG_MAP_BASE(6) | BG_TILE_BASE(0) | BG_PRIORITY(0);
 	menuMap = (u16 *)SCREEN_BASE_BLOCK(6);
 
-//	LZ77UnCompVram(SVBorderTiles, CHAR_BASE_ADR(1));
-//	LZ77UnCompVram(SVBorderMap, MAP_BASE_ADR(2));
+	LZ77UnCompVram(SVBorderTiles, CHAR_BASE_ADR(1));
+	LZ77UnCompVram(SVBorderMap, MAP_BASE_ADR(2));
 	LZ77UnCompVram(EmuFontTiles, (void *)VRAM+0x2400);
 	setupMenuPalette();
-//	setupBorderPalette();
+	setupBorderPalette();
 }
 
 void setupMenuPalette() {
@@ -158,5 +158,5 @@ void setupMenuPalette() {
 }
 
 void setupBorderPalette() {
-	memcpy(&EMUPALBUFF[0x10], SVBorderPal, SVBorderPalLen);
+	memcpy(&EMUPALBUFF[0x10], SVBorderPal+16, SVBorderPalLen-32);
 }
