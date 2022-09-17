@@ -1,0 +1,7 @@
+build
+include/roms
+WasabiGBA.xcodeproj/project.xcworkspace/xcuserdata
+WasabiGBA.xcodeproj/xcuserdata
+*.elf
+*.gba
+*.sav

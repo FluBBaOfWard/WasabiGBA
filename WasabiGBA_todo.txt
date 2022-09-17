@@ -1,0 +1,34 @@
+WasabiGBA Todo
+
+GFX:
+	See SVVideo todo.
+
+GUI:
+	.
+
+Mem:
+
+CPU:
+	See ARM6502 Todo.
+
+Sound:
+	Setting for mono/stereo?
+	See KS5360 todo.
+
+Misc:
+	.
+
+Games Not Working:
+	.
+Games Not Working Fixed:
+	Cave Wonders. TRB/TSB.
+	Climber. TRB/TSB.
+	Juggler. TRB/TSB.
+	Hero Kid. Timer IRQ.
+	Linear Racing. Timer IRQ.
+
+Games With Glitches:
+
+Games With Glitches Fixed:
+	Bubble World. Horizontal scrolling glitches.
+	Kitchen War. - || -
