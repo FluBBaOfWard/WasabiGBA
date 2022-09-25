@@ -3,10 +3,11 @@
 
 #include "Main.h"
 #include "Shared/EmuMenu.h"
+#include "Shared/FileHelper.h"
 #include "Shared/AsmExtra.h"
 #include "GUI.h"
 #include "EmuFont.h"
-#include "SVBorder.h"
+#include "Supervision.h"
 #include "Cart.h"
 #include "cpu.h"
 #include "Gfx.h"
@@ -16,6 +17,7 @@
 static void checkTimeOut(void);
 static void setupGraphics(void);
 
+bool gameInserted = false;
 static int sleepTimer = 60*60*5;	// 5 min
 
 u16 *menuMap;
@@ -47,20 +49,16 @@ int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 	irqInit();
 
+	setupGraphics();
 	irqSet(IRQ_VBLANK, myVBlank);
 	irqEnable(IRQ_VBLANK);
-
-	setupGraphics();
 	setupGUI();
 	getInput();
 
-//	if (g_BIOSBASE_COLOR == NULL) {
-//		installHleBios(biosSpace);
-//	}
-
 	machineInit();
-	gMachine = gMachineSet;
 	loadCart();
+	initFileHelper(SMSID);
+	setupEmuBackground();
 
 	while (1) {
 		waitVBlank();
@@ -144,19 +142,12 @@ static void setupGraphics() {
 
 	// Set up background 3 for menu
 	REG_BG3CNT = TEXTBG_SIZE_512x256 | BG_MAP_BASE(6) | BG_TILE_BASE(0) | BG_PRIORITY(0);
-	menuMap = (u16 *)SCREEN_BASE_BLOCK(6);
+	menuMap = MAP_BASE_ADR(6);
 
-	LZ77UnCompVram(SVBorderTiles, CHAR_BASE_ADR(1));
-	LZ77UnCompVram(SVBorderMap, MAP_BASE_ADR(2));
 	LZ77UnCompVram(EmuFontTiles, (void *)VRAM+0x2400);
 	setupMenuPalette();
-	setupBorderPalette();
 }
 
 void setupMenuPalette() {
 	convertPalette(&EMUPALBUFF[0xE0], guiPalette, 32, gGammaValue);
-}
-
-void setupBorderPalette() {
-	memcpy(&EMUPALBUFF[0x10], SVBorderPal+16, SVBorderPalLen-32);
 }

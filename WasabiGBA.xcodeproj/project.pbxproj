@@ -10,7 +10,11 @@
 		35E683AD1C66453300FCFE8A /* cpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpu.h; sourceTree = "<group>"; };
 		35E683AF1C664A6D00FCFE8A /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
 		746D78E114ED9A8400CC738F /* Makefile */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; fileEncoding = 4; path = Makefile; sourceTree = "<group>"; };
-		9C42403027E224520042454B /* SVHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVHeader.h; sourceTree = "<group>"; };
+		9C1A755228DB2873005F342E /* Supervision.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Supervision.c; sourceTree = "<group>"; };
+		9C1A755328DB2873005F342E /* Supervision.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Supervision.h; sourceTree = "<group>"; };
+		9C1A755828E02EB6005F342E /* FileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileHelper.h; sourceTree = "<group>"; };
+		9C1A755928E02EB6005F342E /* FileHelper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = FileHelper.c; sourceTree = "<group>"; };
+		9C1A755A28E02F9A005F342E /* RomHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RomHeader.h; sourceTree = "<group>"; };
 		9C4C21DE26E54754007D0280 /* FileHandling.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FileHandling.c; sourceTree = "<group>"; };
 		9C4C21E126E54754007D0280 /* FileHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandling.h; sourceTree = "<group>"; };
 		9C50820525D45A9A00A8E1BA /* Cart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cart.h; sourceTree = "<group>"; };
@@ -59,7 +63,6 @@
 		9CDABACA28D5E25B005B888E /* EmuFont.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EmuFont.grit; sourceTree = "<group>"; };
 		9CDABACB28D5E25B005B888E /* EmuFont.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EmuFont.png; sourceTree = "<group>"; };
 		A49D34381757E54900BD9B4B /* cpu.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = cpu.s; sourceTree = "<group>"; };
-		A49D343A1757E54900BD9B4B /* Equates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Equates.h; sourceTree = "<group>"; };
 		A49D34401757E54900BD9B4B /* io.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = io.s; sourceTree = "<group>"; };
 		A4AA02141B04077F0043E4D4 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -155,6 +158,8 @@
 				9CDABAB328D5E06C005B888E /* EmuSettings.h */,
 				9CDABAB128D5E06C005B888E /* EmuMenu.h */,
 				9CDABAB528D5E06D005B888E /* EmuMenu.c */,
+				9C1A755828E02EB6005F342E /* FileHelper.h */,
+				9C1A755928E02EB6005F342E /* FileHelper.c */,
 				9CDABAB028D5E06C005B888E /* AsmExtra.h */,
 				9CDABAB228D5E06C005B888E /* AsmExtra.s */,
 			);
@@ -168,12 +173,15 @@
 				9CDABABF28D5E0F2005B888E /* KS5360 */,
 				A47F092A20863AF5004E1DA6 /* Shared */,
 				9CC013FC2668FDD9005714F7 /* Emubase.h */,
-				A49D343A1757E54900BD9B4B /* Equates.h */,
+				9C1A755A28E02F9A005F342E /* RomHeader.h */,
 				9C50820725D45A9A00A8E1BA /* Main.h */,
 				9C50820C25D45A9B00A8E1BA /* Main.c */,
 				9C50821025D45A9B00A8E1BA /* Gui.h */,
 				9C50820D25D45A9B00A8E1BA /* Gui.c */,
-				9C42403027E224520042454B /* SVHeader.h */,
+				9C4C21E126E54754007D0280 /* FileHandling.h */,
+				9C4C21DE26E54754007D0280 /* FileHandling.c */,
+				9C1A755328DB2873005F342E /* Supervision.h */,
+				9C1A755228DB2873005F342E /* Supervision.c */,
 				9C50820525D45A9A00A8E1BA /* Cart.h */,
 				9C50820F25D45A9B00A8E1BA /* Cart.s */,
 				35E683AD1C66453300FCFE8A /* cpu.h */,
@@ -186,8 +194,6 @@
 				9C50820825D45A9A00A8E1BA /* Gfx.s */,
 				9C715146265661CE0084BE99 /* Memory.h */,
 				9C50820E25D45A9B00A8E1BA /* Memory.s */,
-				9C4C21E126E54754007D0280 /* FileHandling.h */,
-				9C4C21DE26E54754007D0280 /* FileHandling.c */,
 			);
 			path = source;
 			sourceTree = "<group>";

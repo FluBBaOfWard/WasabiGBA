@@ -9,10 +9,10 @@ typedef struct {				//(config struct)
 	char magic[4];				//="CFG",0
 	int emuSettings;
 	int sleepTime;				// autoSleepTime
-	u8 gammaValue;				// from gfx.s
-	u8 config;					// from cart.s
-	u8 controller;				// from io.s
-	u8 contrastValue;				// from gfx.s
+	u8 gammaValue;				// From gfx.s
+	u8 config;					// From cart.s
+	u8 controller;				// From io.s
+	u8 contrastValue;			// From gfx.s
 	u8 language;
 	u8 palette;
 	u8 padding[2];

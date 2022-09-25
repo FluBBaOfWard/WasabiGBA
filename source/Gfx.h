@@ -19,10 +19,11 @@ extern u16 GFX_BG1CNT;
 
 void gfxInit(void);
 void vblIrqHandler(void);
+void paletteTxAll(void);
+void refreshGfx(void);
 void monoPalInit(void);
 void paletteInit(u8 gammaVal);
 void updateLCDRefresh(void);
-void refreshGfx(void);
 u8 wsvReadIO(u16 adr);
 void wsvWriteIO(u16 adr, u8 value);
 

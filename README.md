@@ -19,32 +19,41 @@ B to go back a step.
 	Save Settings: Save the current settings.
 	Reset Game: Reset the currently running game.
 
-### Options:
-	Controller:
-		Autofire: Select if you want autofire.
-		Swap A/B: Swap which GBA button is mapped to which SV button.
-	Display:
-		Gamma: Lets you change the gamma ("brightness").
-		Contrast: Change palette contrast.
-		Palette: Here you can select between different palettes.
-	Machine Settings:
-		Machine: Select the emulated machine.
-	Settings:
-		Speed: Switch between speed modes.
-			Normal: Game runs at it's normal speed.
-			200%: Game runs at double speed.
-			Max: Games can run up to 4 times normal speed (might change).
-			50%: Game runs at half speed.
-		Autoload State: Toggle Savestate autoloading.
-			Automagically load the savestate associated with the selected game.
-		Autosave Settings: This will save settings when
-			leaving menu if any changes are made.
-		Autopause Game: Toggle if the game should pause when opening the menu.
-		Debug Output: Show an FPS meter for now.
-		Autosleep: Doesn't work.
+### Controller:
+	Autofire: Select if you want autofire.
+	Swap A/B: Swap which GBA button is mapped to which SV button.
+
+### Display:
+	Gamma: Lets you change the gamma ("brightness").
+	Contrast: Change palette contrast.
+	Palette: Here you can select between different palettes.
+
+### Settings:
+	Speed: Switch between speed modes.
+		Normal: Game runs at it's normal speed.
+		200%: Game runs at double speed.
+		Max: Games can run up to 4 times normal speed (might change).
+		50%: Game runs at half speed.
+	Autoload State: Toggle Savestate autoloading.
+		Automagically load the savestate associated with the selected game.
+	Autosave Settings: This will save settings when
+		leaving menu if any changes are made.
+	Autopause Game: Toggle if the game should pause when opening the menu.
+	Autosleep: Change the autosleep time, also see Sleep.
+
+### Machine Settings:
+	Machine: Select the emulated machine.
+
+### Debug:
+	Debug Output: Show an FPS meter for now.
+	Step Frame: Emulate one frame.
 
 ### About:
 	Some info about the emulator and game...
+
+### Sleep:
+	Put the GBA into sleepmode.
+	START+SELECT wakes up from sleep mode (activated from this menu or from	5/10/30	minutes of inactivity).
 
 ## Controls:
 	A & B buttons are mapped to SV A & B.
@@ -61,7 +70,7 @@ Huge thanks to Loopy for the incredible PocketNES, without it this emu would
 probably never have been made.
 Thanks to:
 	Peter Trauner & Kevin Horton for docs about the Supervision.
-	Osman Celimli for docs, tests & help about the Supervision.
+	Osman Celimli for docs, tests & help about the Supervision. http://tailchao.com/Wataroo/
 
 
 Fredrik Ahlström
