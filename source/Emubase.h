@@ -5,6 +5,17 @@
 extern "C" {
 #endif
 
+#define WSVID 0x1A565357			// "WSV",0x1A - WataraSuperVision
+
+typedef struct {
+	const u32 identifier;
+	const u32 filesize;
+	const u32 flags;
+	const u32 spritefollow;
+	const u32 reserved[4];
+	const char name[32];
+} RomHeader;
+
 typedef struct {				//(config struct)
 	char magic[4];				//="CFG",0
 	int emuSettings;

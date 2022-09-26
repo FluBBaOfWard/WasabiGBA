@@ -14,7 +14,6 @@
 		9C1A755328DB2873005F342E /* Supervision.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Supervision.h; sourceTree = "<group>"; };
 		9C1A755828E02EB6005F342E /* FileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileHelper.h; sourceTree = "<group>"; };
 		9C1A755928E02EB6005F342E /* FileHelper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = FileHelper.c; sourceTree = "<group>"; };
-		9C1A755A28E02F9A005F342E /* RomHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RomHeader.h; sourceTree = "<group>"; };
 		9C4C21DE26E54754007D0280 /* FileHandling.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FileHandling.c; sourceTree = "<group>"; };
 		9C4C21E126E54754007D0280 /* FileHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandling.h; sourceTree = "<group>"; };
 		9C50820525D45A9A00A8E1BA /* Cart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cart.h; sourceTree = "<group>"; };
@@ -173,7 +172,6 @@
 				9CDABABF28D5E0F2005B888E /* KS5360 */,
 				A47F092A20863AF5004E1DA6 /* Shared */,
 				9CC013FC2668FDD9005714F7 /* Emubase.h */,
-				9C1A755A28E02F9A005F342E /* RomHeader.h */,
 				9C50820725D45A9A00A8E1BA /* Main.h */,
 				9C50820C25D45A9B00A8E1BA /* Main.c */,
 				9C50821025D45A9B00A8E1BA /* Gui.h */,

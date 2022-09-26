@@ -6,7 +6,6 @@ extern "C" {
 #endif
 
 #include "Emubase.h"
-#include "RomHeader.h"
 #include "Supervision.h"
 
 #define FILEEXTENSIONS ".sv.bin"
@@ -15,13 +14,13 @@ extern ConfigData cfg;
 
 int loadSettings(void);
 void saveSettings(void);
+bool loadGame(const RomHeader *rh);
+void checkMachine(void);
 int loadNVRAM(void);
 void saveNVRAM(void);
 void loadState(void);
 void saveState(void);
 void selectGame(void);
-bool loadGame(const romheader *rh);
-void checkMachine(void);
 
 #ifdef __cplusplus
 } // extern "C"

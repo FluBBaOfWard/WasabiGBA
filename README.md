@@ -6,6 +6,11 @@ This is a Watara/QuickShot Supervision emulator for the Nintendo GBA.
 
 ## How to use:
 
+There is no builder included in the release yet.
+The header is 64 bytes long, the size field is in little endian, the 32bit id is 0x1A565357 (LE).
+The name field can be 31 bytes plus a terminating zero.
+There is an example header file included, "Supervision.header".
+
 When the emulator starts, you press L+R to open up the menu.
 Now you can use the cross to navigate the menus, A to select an option,
 B to go back a step.

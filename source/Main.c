@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
 	machineInit();
 	loadCart();
-	initFileHelper(SMSID);
+	initFileHelper(WSVID);
 	setupEmuBackground();
 
 	while (1) {
@@ -114,7 +114,6 @@ void setEmuSpeed(int speed) {
 		waitMaskIn = 0x01;
 		waitMaskOut = 0x00;
 	}
-
 }
 
 //---------------------------------------------------------------------------------

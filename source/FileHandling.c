@@ -1,10 +1,5 @@
 #include <gba.h>
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/dir.h>
 
 #include "FileHandling.h"
 #include "Emubase.h"
@@ -90,16 +85,16 @@ void saveState(void) {
 }
 
 //---------------------------------------------------------------------------------
-bool loadGame( const romheader *rh) {
-	if (rh ) {
+bool loadGame(const RomHeader *rh) {
+	if (rh) {
 		gRomSize = rh->filesize;
-		romSpacePtr = (const u8 *)rh + sizeof(romheader);
+		romSpacePtr = (const u8 *)rh + sizeof(RomHeader);
 		selectedGame = selected;
 		checkMachine();
 		setEmuSpeed(0);
 		loadCart();
 		gameInserted = true;
-		if ( emuSettings & AUTOLOAD_NVRAM ) {
+		if (emuSettings & AUTOLOAD_NVRAM) {
 			loadNVRAM();
 		}
 		if (emuSettings & AUTOLOAD_STATE) {
@@ -114,18 +109,18 @@ bool loadGame( const romheader *rh) {
 void selectGame() {
 	pauseEmulation = true;
 	setSelectedMenu(9);
-	const romheader *rh = browseForFile();
-	if ( loadGame(rh) ) {
+	const RomHeader *rh = browseForFile();
+	if (loadGame(rh)) {
 		backOutOfMenu();
 	}
 }
 
 void checkMachine() {
-	if ( gMachineSet == HW_AUTO ) {
-		if ( romSpacePtr[gRomSize - 9] != 0 ) {
+	if (gMachineSet == HW_AUTO) {
+		if (romSpacePtr[gRomSize - 9] != 0) {
 			gMachine = HW_SUPERVISION;
 		}
-//		else if ( strstr(fileExt, ".pc2") ) {
+//		else if (strstr(fileExt, ".pc2")) {
 //			gMachine = HW_SUPERVISION_TVLINK;
 //		}
 	}
