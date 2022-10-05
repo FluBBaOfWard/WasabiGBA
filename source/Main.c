@@ -5,7 +5,8 @@
 #include "Shared/EmuMenu.h"
 #include "Shared/FileHelper.h"
 #include "Shared/AsmExtra.h"
-#include "GUI.h"
+#include "Gui.h"
+#include "FileHandling.h"
 #include "EmuFont.h"
 #include "Supervision.h"
 #include "Cart.h"
@@ -57,7 +58,10 @@ int main(int argc, char **argv) {
 
 	machineInit();
 	loadCart();
-	initFileHelper(WSVID);
+	if (initFileHelper(WSVID) == 1) {
+		const RomHeader *rh = findRom(0);
+		loadGame(rh);
+	}
 	setupEmuBackground();
 
 	while (1) {
@@ -126,7 +130,6 @@ static void setupGraphics() {
 				| BG0_ON
 				| BG2_ON
 				| BG3_ON
-				| OBJ_ON
 				| WIN0_ON
 				| WIN1_ON
 				;

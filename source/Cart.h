@@ -18,12 +18,7 @@ extern int sramSize;
 
 extern u8 svRAM[0x2000];
 extern u8 svVRAM[0x2000];
-extern u8 svSRAM[0x2000];
-extern u8 biosSpace[0x1000];
-extern u8 biosSpaceColor[0x2000];
 extern const u8 *romSpacePtr;
-extern void *g_BIOSBASE_BNW;
-extern void *g_BIOSBASE_COLOR;
 
 void machineInit(void);
 void loadCart(void);

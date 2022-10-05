@@ -7,7 +7,7 @@
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Shared/FileHelper.h"
-#include "GUI.h"
+#include "Gui.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "io.h"
@@ -17,24 +17,6 @@ ConfigData cfg;
 
 //---------------------------------------------------------------------------------
 int loadSettings() {
-//	FILE *file;
-/*
-	if (findFolder(folderName)) {
-		return 1;
-	}
-	if ( (file = fopen(settingName, "r")) ) {
-		fread(&cfg, 1, sizeof(configdata), file);
-		fclose(file);
-		if (!strstr(cfg.magic,"cfg")) {
-			infoOutput("Error in settings file.");
-			return 1;
-		}
-	} else {
-		infoOutput("Couldn't open file:");
-		infoOutput(settingName);
-		return 1;
-	}
-*/
 	gGammaValue = cfg.gammaValue;
 	emuSettings  = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
 	sleepTime    = cfg.sleepTime;
@@ -45,26 +27,12 @@ int loadSettings() {
 	return 0;
 }
 void saveSettings() {
-//	FILE *file;
-
 	strcpy(cfg.magic,"cfg");
 	cfg.gammaValue  = gGammaValue;
 	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
 	cfg.sleepTime   = sleepTime;
 	cfg.controller  = (joyCfg>>10)&1;
 //	strlcpy(cfg.currentPath, currentDir, sizeof(currentDir));
-/*
-	if (findFolder(folderName)) {
-		return;
-	}
-	if ( (file = fopen(settingName, "w")) ) {
-		fwrite(&cfg, 1, sizeof(configdata), file);
-		fclose(file);
-		infoOutput("Settings saved.");
-	} else {
-		infoOutput("Couldn't open file:");
-		infoOutput(settingName);
-	}*/
 	infoOutput("Settings saved.");
 }
 
@@ -108,7 +76,7 @@ bool loadGame(const RomHeader *rh) {
 
 void selectGame() {
 	pauseEmulation = true;
-	setSelectedMenu(9);
+	ui9();
 	const RomHeader *rh = browseForFile();
 	if (loadGame(rh)) {
 		backOutOfMenu();

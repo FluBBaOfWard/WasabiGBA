@@ -1,7 +1,7 @@
 #include <gba.h>
 #include <string.h>
 
-#include "GUI.h"
+#include "Gui.h"
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Main.h"
@@ -13,7 +13,7 @@
 #include "ARM6502/Version.h"
 #include "KS5360/Version.h"
 
-#define EMUVERSION "V0.2.1 2022-09-26"
+#define EMUVERSION "V0.2.2 2022-10-05"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -24,7 +24,6 @@ static void machineSet(void);
 
 static void uiMachine(void);
 static void uiDebug(void);
-static void updateGameInfo(void);
 
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
@@ -41,11 +40,9 @@ const fptr fnList9[] = {quickSelectGame};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9};
 const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9)};
 const fptr drawUIX[] = {uiNullNormal, uiMainMenu, uiFile, uiController, uiDisplay, uiSettings, uiMachine, uiDebug, uiAbout, uiLoadGame};
-const u8 menuXBack[] = {0,0,1,1,1,1,1,1,1,2};
 
 u8 gGammaValue = 0;
 u8 gContrastValue = 1;
-char gameInfoString[32];
 
 const char *const autoTxt[]  = {"Off", "On", "With R"};
 const char *const speedTxt[] = {"Normal", "200%", "Max", "50%"};
@@ -113,18 +110,15 @@ void uiMainMenu() {
 
 void uiAbout() {
 	setupSubMenu("About");
-	updateGameInfo();
 	drawText("A:        SV A Button", 3);
 	drawText("B:        SV B Button", 4);
 	drawText("Start:    SV Start Button", 5);
 	drawText("Select:   Sv Select Button", 6);
 	drawText("DPad:     SV DPad", 7);
 
-//	drawText(gameInfoString, 9);
-
-	drawText("WasabiGBA   " EMUVERSION, 17);
-	drawText("KS5360      " KS5360VERSION, 18);
-	drawText("ARM6502     " ARM6502VERSION, 19);
+	drawText("WasabiGBA  " EMUVERSION, 17);
+	drawText("KS5360     " KS5360VERSION, 18);
+	drawText("ARM6502    " ARM6502VERSION, 19);
 }
 
 void uiController() {
@@ -176,11 +170,6 @@ void resetGame() {
 	loadCart();
 }
 
-void updateGameInfo() {
-	char catalog[8];
-//	char2HexStr(catalog, gGameID);
-	strlMerge(gameInfoString, " Game #: 0x", catalog, sizeof(gameInfoString));
-}
 //---------------------------------------------------------------------------------
 void debugIO(u8 port, u8 val, const char *message) {
 	char debugString[32];

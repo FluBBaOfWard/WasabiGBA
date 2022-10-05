@@ -1,8 +1,5 @@
 #ifdef __arm__
 
-#include "ARM6502/M6502.i"
-#include "KS5360/KS5360.i"
-
 	.global ioReset
 	.global refreshEMUjoypads
 	.global ioSaveState
@@ -65,12 +62,12 @@ refreshEMUjoypads:			;@ Call every frame
 	and r0,r4,#0xf0
 		ldr r2,joyCfg
 		andcs r3,r3,r2
-		tstcs r3,r3,lsr#10		;@ NDS L?
+		tstcs r3,r3,lsr#10		;@ GBA L?
 		andcs r3,r3,r2,lsr#16
 	adr r1,dulr2udlr
 	ldrb r0,[r1,r0,lsr#4]
 
-	and r1,r4,#0x0C				;@ NDS Select/Start
+	and r1,r4,#0x0C				;@ GBA Select/Start
 	orr r0,r0,r1,lsl#4			;@ SV Select/Start
 
 	ands r1,r3,#3				;@ A/B buttons

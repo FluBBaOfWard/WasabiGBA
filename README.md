@@ -1,4 +1,4 @@
-# WasabiGBA V0.2.1
+# WasabiGBA V0.2.2
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -7,7 +7,8 @@ This is a Watara/QuickShot Supervision emulator for the Nintendo GBA.
 ## How to use:
 
 There is no builder included in the release yet.
-The header is 64 bytes long, the size field is in little endian, the 32bit id is 0x1A565357 (LE).
+The header is defined in Emubase.h, it's 64 bytes long, the size field is in
+little endian, the 32bit id is 0x1A565357 (LE).
 The name field can be 31 bytes plus a terminating zero.
 There is an example header file included, "Supervision.header".
 
