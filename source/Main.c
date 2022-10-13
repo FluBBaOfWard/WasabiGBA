@@ -50,6 +50,7 @@ int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 	irqInit();
 
+	enableExit = true;
 	setupGraphics();
 	irqSet(IRQ_VBLANK, myVBlank);
 	irqEnable(IRQ_VBLANK);
@@ -58,7 +59,7 @@ int main(int argc, char **argv) {
 
 	machineInit();
 	loadCart();
-	if (initFileHelper(WSVID) == 1) {
+	if (initFileHelper(WSVID)) {
 		const RomHeader *rh = findRom(0);
 		loadGame(rh);
 	}

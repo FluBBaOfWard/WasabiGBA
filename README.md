@@ -1,4 +1,4 @@
-# WasabiGBA V0.2.2
+# WasabiGBA V0.2.3
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -45,6 +45,9 @@ B to go back a step.
 	Autosave Settings: This will save settings when
 		leaving menu if any changes are made.
 	Autopause Game: Toggle if the game should pause when opening the menu.
+	Overclock EWRAM: Changes the waitstates on EWRAM between 2 and 1,
+		might damage your GBA and uses more power, around 10% speedgain.
+		Doesn't work on Gameboy Micro. Use at your own risk!
 	Autosleep: Change the autosleep time, also see Sleep.
 
 ### Machine Settings:
@@ -61,11 +64,14 @@ B to go back a step.
 	Put the GBA into sleepmode.
 	START+SELECT wakes up from sleep mode (activated from this menu or from	5/10/30	minutes of inactivity).
 
+### Quit Emulator:
+	Tries to reset the Flashcart and reboots the GBA.
+
 ## Controls:
-	A & B buttons are mapped to SV A & B.
-	Start is mapped to SV Start.
-	Select is mapped to SV Select.
-	The d-pad is mapped to SV d-pad.
+	GBA A & B buttons are mapped to Supervision A & B.
+	GBA Start is mapped to Supervision Start.
+	GBA Select is mapped to Supervision Select.
+	GBA d-pad is mapped to Supervision d-pad.
 
 ## Games:
 	All games should "work".

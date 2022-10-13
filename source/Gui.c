@@ -13,7 +13,7 @@
 #include "ARM6502/Version.h"
 #include "KS5360/Version.h"
 
-#define EMUVERSION "V0.2.2 2022-10-06"
+#define EMUVERSION "V0.2.3 2022-10-13"
 
 #define ALLOW_SPEED_HACKS	(1<<17)
 #define ENABLE_HEADPHONES	(1<<18)
@@ -25,21 +25,22 @@ static void machineSet(void);
 static void uiMachine(void);
 static void uiDebug(void);
 
-const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
+const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
 const fptr fnList0[] = {uiDummy};
-const fptr fnList1[] = {ui2, ui3, ui4, ui5, ui6, ui7, ui8, gbaSleep, resetGame};
+const fptr fnList1[] = {ui2, ui3, ui4, ui5, ui6, ui7, ui8, gbaSleep, resetGame, ui10};
 const fptr fnList2[] = {selectGame, loadState, saveState, saveSettings, resetGame};
 const fptr fnList3[] = {autoBSet, autoASet, swapABSet};
 const fptr fnList4[] = {gammaSet, contrastSet, paletteChange};
-const fptr fnList5[] = {speedSet, autoStateSet, autoSettingsSet, autoPauseGameSet, sleepSet};
+const fptr fnList5[] = {speedSet, autoStateSet, autoSettingsSet, autoPauseGameSet, ewramSet, sleepSet};
 const fptr fnList6[] = {machineSet};
 const fptr fnList7[] = {debugTextSet, stepFrame};
 const fptr fnList8[] = {uiDummy};
 const fptr fnList9[] = {quickSelectGame};
-const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9};
-const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9)};
-const fptr drawUIX[] = {uiNullNormal, uiMainMenu, uiFile, uiController, uiDisplay, uiSettings, uiMachine, uiDebug, uiAbout, uiLoadGame};
+const fptr fnList10[] = {exitEmulator, backOutOfMenu};
+const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9, fnList10};
+const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9), ARRSIZE(fnList10)};
+const fptr drawUIX[] = {uiNullNormal, uiMainMenu, uiFile, uiController, uiDisplay, uiSettings, uiMachine, uiDebug, uiAbout, uiLoadGame, uiYesNo};
 
 u8 gGammaValue = 0;
 u8 gContrastValue = 1;
@@ -104,7 +105,7 @@ void uiMainMenu() {
 	drawMenuItem("Sleep");
 	drawMenuItem("Restart");
 	if (enableExit) {
-		drawMenuItem("Exit");
+		drawMenuItem("Quit Emulator");
 	}
 }
 
@@ -146,6 +147,7 @@ void uiSettings() {
 	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
 	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>1)&1]);
 	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
+	drawSubItem("Overclock EWRAM: ", autoTxt[ewram&1]);
 	drawSubItem("Autosleep: ", sleepTxt[(emuSettings>>8)&3]);
 }
 

@@ -1,6 +1,10 @@
 Wasabi revision history
 -=-=-=-=-=-=-=-=-=-=-=-
 
+V0.2.3 - 2022-10-13 (FluBBa)
+	Added Quit Emulator menu item.
+	Added Overclock EWRAM menu item.
+
 V0.2.2 - 2022-10-06 (FluBBa)
 	Added new debug menu.
 	Better menu traversing.
