@@ -94,7 +94,8 @@ static void checkTimeOut() {
 //---------------------------------------------------------------------------------
 	if (EMUinput) {
 		sleepTimer = sleepTime;
-	} else {
+	}
+	else {
 		sleepTimer--;
 		if (sleepTimer < 0) {
 			sleepTimer = sleepTime;
@@ -109,13 +110,16 @@ void setEmuSpeed(int speed) {
 	if (speed == 0) {			// Normal Speed
 		waitMaskIn = 0x00;
 		waitMaskOut = 0x00;
-	} else if (speed == 1) {	// Double speed
+	}
+	else if (speed == 1) {	// Double speed
 		waitMaskIn = 0x00;
 		waitMaskOut = 0x01;
-	} else if (speed == 2) {	// Max speed (4x)
+	}
+	else if (speed == 2) {	// Max speed (4x)
 		waitMaskIn = 0x00;
 		waitMaskOut = 0x03;
-	} else if (speed == 3) {	// 50% speed
+	}
+	else if (speed == 3) {	// 50% speed
 		waitMaskIn = 0x01;
 		waitMaskOut = 0x00;
 	}
@@ -137,6 +141,7 @@ static void setupGraphics() {
 	SetMode(GFX_DISPCNT);
 	GFX_BG0CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(0) | BG_16_COLOR | BG_TILE_BASE(2) | BG_PRIORITY(2);
 	REG_BG0CNT = GFX_BG0CNT;
+	// Background 2 for border
 	REG_BG2CNT = TEXTBG_SIZE_256x256 | BG_MAP_BASE(2) | BG_256_COLOR | BG_TILE_BASE(1) | BG_PRIORITY(3);
 
 	REG_WIN0H = 0x0000+SCREEN_WIDTH;		// Horizontal start-end
