@@ -11,15 +11,7 @@
 	.global vblSound2
 	.global setMuteSoundGUI
 	.global setMuteSoundChip
-	.global soundLatchW
-	.global ym1IndexW
-	.global ym1DataW
-	.global ym1StatusR
-	.global ym1DataR
-	.global ym2IndexW
-	.global ym2DataW
-	.global ym2StatusR
-	.global ym2DataR
+	.global soundMode
 
 	.extern pauseEmulation
 
@@ -61,25 +53,14 @@ soundInit:
 	ldr r0,pcmPtr0
 	str r0,[r5,#REG_DMA1SAD]	;@ DMA1 src=..
 
-/*
-	ldr snptr,=SN76496_0
-	mov r1,#1
-	bl SN76496SetMixrate		;@ Sound, 0=low, 1=high mixrate
-	ldr r1,=1536000
-	bl SN76496SetFrequency		;@ Sound, chip frequency
-	ldr r1,=FREQTBL
-	bl SN76496Init				;@ Sound
-*/
-
 	ldrb r2,soundMode			;@ If r2=0, no sound.
 	cmp r2,#1
 
-	add r1,r5,#REG_TM0CNT_L		;@ Timer 0 controls sample rate:
-	mov r4,#0
-	str r4,[r1]					;@ Stop timer 0
-//	ldreq r3,[snptr,#mixRate]	;@ 924=Low, 532=High.
+	mov r4,#0					;@ Timer 0 controls sample rate:
+	str r4,[r5,#REG_TM0CNT_L]	;@ Stop timer 0
+	ldreq r3,=532				;@ 924=Low, 532=High.
 	rsbeq r4,r3,#0x810000		;@ Timer 0 on. Frequency = 0x1000000/r3 Hz
-	streq r4,[r1]
+	streq r4,[r5,#REG_TM0CNT_L]
 
 	ldmfd sp!,{r3-r5,lr}
 	bx lr
@@ -88,8 +69,8 @@ soundInit:
 soundReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
-//	ldr ymptr,=ym1
-//	bl ym2203Reset				;@ sound
+	ldr svvptr,=ks5360_0
+	bl svAudioReset			;@ sound
 	ldmfd sp!,{lr}
 	bx lr
 
@@ -119,7 +100,7 @@ vblSound1:
 	ldr r2,pcmPtr0
 	str r2,[r1,#REG_DMA1SAD]	;@ DMA1 src=..
 	ldr r0,=0xB640				;@ noIRQ fifo 32bit repeat incsrc fixeddst
-//	strh r0,[r1,#REG_DMA1CNT_H]	;@ DMA1 go
+	strh r0,[r1,#REG_DMA1CNT_H]	;@ DMA1 go
 
 	ldr r1,pcmPtr1
 	str r1,pcmPtr0
@@ -135,37 +116,24 @@ vblSound2:
 	cmp r0,#0
 	bxeq lr
 
-	mov r2,#MIX_LEN
+	mov r0,#MIX_LEN
 	ldr r1,pcmPtr0
-	ldr r0,muteSound
-	cmp r0,#0
-//	b silenceMix
-
-//	ldreq ymptr,=ym1
-//	beq YM2203Mixer
+	ldr r2,muteSound
+	cmp r2,#0
+	bne silenceMix
+	ldr svvptr,=ks5360_0
+	b svAudioMixer
 
 ;@----------------------------------------------------------------------------
-silenceMix:					;@ r1=destination, r2=len
+silenceMix:					;@ r0=len, r1=destination
 ;@----------------------------------------------------------------------------
-	mov r0,#0
+	mov r2,#0
 silenceLoop:
-	subs r2,r2,#4
-	strpl r0,[r1],#4
+	subs r0,r0,#4
+	strpl r2,[r1],#4
 	bhi silenceLoop
 
 	bx lr
-;@----------------------------------------------------------------------------
-soundLatchW:
-;@----------------------------------------------------------------------------
-	strb r0,soundLatch
-	bx lr
-;@----------------------------------------------------------------------------
-ym2DataR:
-;@----------------------------------------------------------------------------
-	stmfd sp!,{r3,lr}
-//	ldr ymptr,=ym2
-//	bl ym2203DataR
-	ldmfd sp!,{r3,pc}
 
 ;@----------------------------------------------------------------------------
 pcmPtr0:	.long WAVBUFFER

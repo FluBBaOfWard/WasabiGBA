@@ -8,6 +8,7 @@
 #include "FileHandling.h"
 #include "Cart.h"
 #include "Gfx.h"
+#include "Sound.h"
 #include "io.h"
 #include "cpu.h"
 #include "ARM6502/Version.h"
@@ -21,6 +22,7 @@
 
 static void paletteChange(void);
 static void machineSet(void);
+static void soundSet(void);
 
 static void uiMachine(void);
 static void uiDebug(void);
@@ -32,7 +34,7 @@ const fptr fnList1[] = {ui2, ui3, ui4, ui5, ui6, ui7, ui8, gbaSleep, resetGame, 
 const fptr fnList2[] = {selectGame, loadState, saveState, saveSettings, resetGame};
 const fptr fnList3[] = {autoBSet, autoASet, swapABSet};
 const fptr fnList4[] = {gammaSet, contrastSet, paletteChange};
-const fptr fnList5[] = {speedSet, autoStateSet, autoSettingsSet, autoPauseGameSet, ewramSet, sleepSet};
+const fptr fnList5[] = {speedSet, soundSet, autoStateSet, autoSettingsSet, autoPauseGameSet, ewramSet, sleepSet};
 const fptr fnList6[] = {machineSet};
 const fptr fnList7[] = {debugTextSet, stepFrame};
 const fptr fnList8[] = {uiDummy};
@@ -144,6 +146,7 @@ static void uiMachine() {
 void uiSettings() {
 	setupSubMenu("Other Settings");
 	drawSubItem("Speed: ", speedTxt[(emuSettings>>6)&3]);
+	drawSubItem("Sound: ", autoTxt[(emuSettings>>10)&1]);
 	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
 	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>1)&1]);
 	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
@@ -242,7 +245,11 @@ void machineSet() {
 		gMachineSet = 0;
 	}
 }
-
+void soundSet() {
+	soundEnableSet();
+	soundMode = (emuSettings>>10)&1;
+	soundInit();
+}
 void speedHackSet() {
 //	emuSettings ^= ALLOW_SPEED_HACKS;
 //	emuSettings &= ~HALF_CPU_SPEED;
