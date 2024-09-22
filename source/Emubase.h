@@ -11,7 +11,7 @@ typedef struct {
 	const u32 identifier;
 	const u32 filesize;
 	const u32 flags;
-	const u32 spritefollow;
+	const u32 undefined;
 	const u32 bios;			// bit 0 = bios file.
 	const u32 reserved[3];
 	const char name[32];

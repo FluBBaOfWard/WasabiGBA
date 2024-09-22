@@ -5,20 +5,19 @@
 
 #define CYCLE_PSL (246*2)
 
+	.global waitMaskIn
+	.global waitMaskOut
+	.global m6502_0
+
 	.global run
 	.global stepFrame
 	.global cpuInit
 	.global cpuReset
 
-	.global frameTotal
-	.global waitMaskIn
-	.global waitMaskOut
-	.global m6502_0
-
 	.syntax unified
 	.arm
 
-#if GBA
+#ifdef GBA
 	.section .ewram, "ax", %progbits	;@ For the GBA
 #else
 	.section .text						;@ For anything else
@@ -70,14 +69,6 @@ svFrameLoop:
 ;@----------------------------------------------------------------------------
 	add r0,m6502ptr,#m6502Regs
 	stmia r0,{m6502nz-m6502pc}	;@ Save M6502 state
-	ldr r1,=fpsValue
-	ldr r0,[r1]
-	add r0,r0,#1
-	str r0,[r1]
-
-	ldr r1,frameTotal
-	add r1,r1,#1
-	str r1,frameTotal
 
 	ldrh r0,waitCountOut
 	add r0,r0,#1
@@ -90,7 +81,6 @@ svFrameLoop:
 ;@----------------------------------------------------------------------------
 m6502CyclesPerScanline:	.long 0
 joyClick:			.long 0
-frameTotal:			.long 0		;@ Let GUI.c see frame count for savestates
 waitCountIn:		.byte 0
 waitMaskIn:			.byte 0
 waitCountOut:		.byte 0
@@ -121,10 +111,6 @@ svStepLoop:
 ;@----------------------------------------------------------------------------
 	add r0,m6502ptr,#m6502Regs
 	stmia r0,{m6502nz-m6502pc}	;@ Save M6502 state
-
-	ldr r1,frameTotal
-	add r1,r1,#1
-	str r1,frameTotal
 
 	ldmfd sp!,{r4-r11,lr}
 	bx lr

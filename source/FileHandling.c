@@ -16,19 +16,31 @@ static int selectedGame = 0;
 ConfigData cfg;
 
 //---------------------------------------------------------------------------------
+int initSettings() {
+	cfg.config = 0;
+	cfg.palette = 0;
+	cfg.gammaValue = 0x10;
+	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | ALLOW_SPEED_HACKS;
+	cfg.sleepTime = 60*60*5;
+	cfg.controller = 0;					// Don't swap A/B
+	return 0;
+}
+
 int loadSettings() {
-	gGammaValue = cfg.gammaValue;
-	emuSettings  = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
-	sleepTime    = cfg.sleepTime;
-	joyCfg       = (joyCfg&~0x400)|((cfg.controller&1)<<10);
+	gGammaValue   = cfg.gammaValue & 0xF;
+	gContrastValue = (cfg.gammaValue>>4) & 0xF;
+	emuSettings = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
+	sleepTime   = cfg.sleepTime;
+	joyCfg      = (joyCfg&~0x400)|((cfg.controller&1)<<10);
 //	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
+	pauseEmulation = emuSettings & AUTOPAUSE_EMULATION;
 
 	infoOutput("Settings loaded.");
 	return 0;
 }
 void saveSettings() {
 	strcpy(cfg.magic,"cfg");
-	cfg.gammaValue  = gGammaValue;
+	cfg.gammaValue  = (gGammaValue & 0xF) | (gContrastValue<<4);
 	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
 	cfg.sleepTime   = sleepTime;
 	cfg.controller  = (joyCfg>>10)&1;
@@ -68,6 +80,7 @@ bool loadGame(const RomHeader *rh) {
 		if (emuSettings & AUTOLOAD_STATE) {
 			loadState();
 		}
+		powerIsOn = true;
 		closeMenu();
 		return false;
 	}

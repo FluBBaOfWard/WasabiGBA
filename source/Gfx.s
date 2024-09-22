@@ -3,20 +3,7 @@
 #include "Shared/gba_asm.h"
 #include "KS5360/KS5360.i"
 
-	.global gfxInit
-	.global gfxReset
-	.global monoPalInit
-	.global paletteInit
-	.global paletteTxAll
-	.global refreshGfx
-	.global endFrameGfx
-	.global wsvReadIO
-	.global wsvWriteIO
-	.global updateLCDRefresh
-	.global setScreenRefresh
-
 	.global gfxState
-	.global gGammaValue
 	.global gFlicker
 	.global gTwitch
 	.global gGfxMask
@@ -25,16 +12,26 @@
 	.global GFX_BG0CNT
 	.global GFX_BG1CNT
 	.global EMUPALBUFF
-	.global tmpOamBuffer
-
-
+	.global frameTotal
 	.global ks5360_0
+
+	.global gfxInit
+	.global gfxReset
+	.global monoPalInit
+	.global paletteInit
+	.global paletteTxAll
+	.global gfxRrefresh
+	.global gfxEndFrame
+	.global svReadIO
+	.global svWriteIO
+	.global updateLCDRefresh
+	.global setScreenRefresh
 
 
 	.syntax unified
 	.arm
 
-#if GBA
+#ifdef GBA
 	.section .ewram, "ax", %progbits	;@ For the GBA
 #else
 	.section .text						;@ For anything else
@@ -306,12 +303,12 @@ nothingNew:
 
 
 ;@----------------------------------------------------------------------------
-refreshGfx:					;@ Called from C when changing scaling.
-	.type refreshGfx STT_FUNC
+gfxRefresh:					;@ Called from C when changing scaling.
+	.type gfxRefresh STT_FUNC
 ;@----------------------------------------------------------------------------
 	adr svvptr,ks5360_0
 ;@----------------------------------------------------------------------------
-endFrameGfx:				;@ Called just before screen end (~line 159)	(r0-r3 safe to use)
+gfxEndFrame:				;@ Called just before screen end (~line 159)	(r0-r3 safe to use)
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r3,lr}
 
@@ -327,10 +324,21 @@ endFrameGfx:				;@ Called just before screen end (~line 159)	(r0-r3 safe to use)
 	mov r0,#1
 	strb r0,frameDone
 
+	ldr r1,=fpsValue
+	ldr r0,[r1]
+	add r0,r0,#1
+	str r0,[r1]
+
+	ldr r1,frameTotal
+	add r1,r1,#1
+	str r1,frameTotal
+
 	ldmfd sp!,{r3,lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
+frameTotal:			.long 0		;@ Let GUI.c see frame count for savestates
+
 tmpScroll:		.long SCROLLBUFF1
 dmaScroll:		.long SCROLLBUFF2
 
@@ -348,8 +356,8 @@ svVideoReset0:		;@ r0=NmiFunc, r1=IrqFunc, r2=ram+LUTs, r3=model
 	adr svvptr,ks5360_0
 	b svVideoReset
 ;@----------------------------------------------------------------------------
-wsvReadIO:
-	.type wsvReadIO STT_FUNC
+svReadIO:
+	.type svReadIO STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r3,r12,lr}
 	mov r0,r12
@@ -358,8 +366,8 @@ wsvReadIO:
 	ldmfd sp!,{r3,r12,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
-wsvWriteIO:
-	.type wsvWriteIO STT_FUNC
+svWriteIO:
+	.type svWriteIO STT_FUNC
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{r3,r12,lr}
 	mov r1,r0

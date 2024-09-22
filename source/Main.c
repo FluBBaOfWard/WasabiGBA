@@ -18,6 +18,7 @@
 static void checkTimeOut(void);
 static void setupGraphics(void);
 
+bool powerIsOn = false;
 bool gameInserted = false;
 static int sleepTimer = 60*60*5;	// 5 min
 
@@ -49,27 +50,29 @@ void myVBlank(void) {
 int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 	irqInit();
+	irqSet(IRQ_VBLANK, myVBlank);
+	irqEnable(IRQ_VBLANK);
 
 	enableExit = true;
 	setupGraphics();
-	irqSet(IRQ_VBLANK, myVBlank);
-	irqEnable(IRQ_VBLANK);
 	setupGUI();
 	getInput();
-
+	initSettings();
+	bool fsOk = initFileHelper(WSVID);
+	loadSettings();
 	machineInit();
 	loadCart();
-	if (initFileHelper(WSVID)) {
+	setupEmuBackground();
+	if (fsOk) {
 		const RomHeader *rh = findRom(0);
 		loadGame(rh);
 	}
-	setupEmuBackground();
 
 	while (1) {
 		waitVBlank();
 //		checkTimeOut();
 		guiRunLoop();
-		if (!pauseEmulation) {
+		if (powerIsOn && !pauseEmulation) {
 			run();
 		}
 	}

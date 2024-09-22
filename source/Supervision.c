@@ -3,6 +3,7 @@
 
 #include "Supervision.h"
 #include "SVBorder.h"
+#include "Gui.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "cpu.h"
@@ -38,19 +39,49 @@ int getStateSize() {
 	return size;
 }
 
+static void setupBorderPalette(const unsigned short *palette, int len) {
+	if (gBorderEnable == 0) {
+		memset(&EMUPALBUFF[0x10], 0, 32);
+	}
+	else {
+		memcpy(&EMUPALBUFF[0x10], palette+16, 32);
+	}
+}
+
 void setupSVBackground() {
 	LZ77UnCompVram(SVBorderTiles, TILE_BASE_ADR(1));
 	LZ77UnCompVram(SVBorderMap, MAP_BASE_ADR(2));
-	memcpy(&EMUPALBUFF[0x10], SVBorderPal+16, 32);
 }
 
+void setupSVBorderPalette() {
+	setupBorderPalette(SVBorderPal, SVBorderPalLen);
+}
 
-void setupBorderPalette() {
-	memcpy(&EMUPALBUFF[0x10], SVBorderPal+16, 32); // SVBorderPalLen
+void setupTVBackground() {
+//	decompress(TVLinkTiles, BG_TILE_RAM(1), LZ77Vram);
+//	decompress(TVLinkMap, BG_MAP_RAM(2), LZ77Vram);
+}
+
+void setupTVBorderPalette() {
+//	setupBorderPalette(TVLinkPal, TVLinkPalLen);
 }
 
 void setupEmuBackground() {
-//	if (gMachine == HW_SUPERVISION) {
+	if (gMachine == HW_SUPERVISION) {
 		setupSVBackground();
-//	}
+		setupSVBorderPalette();
+	}
+	else {
+		setupTVBackground();
+		setupTVBorderPalette();
+	}
+}
+
+void setupEmuBorderPalette() {
+	if (gMachine == HW_SUPERVISION) {
+		setupSVBorderPalette();
+	}
+	else {
+		setupTVBorderPalette();
+	}
 }
