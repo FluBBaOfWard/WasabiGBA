@@ -14,7 +14,7 @@
 #include "ARM6502/Version.h"
 #include "KS5360/Version.h"
 
-#define EMUVERSION "V0.2.4 2024-09-22"
+#define EMUVERSION "V0.2.5 2026-01-06"
 
 static void gammaChange(void);
 static void paletteChange(void);
@@ -37,8 +37,8 @@ const MItem mainItems[] = {
 	{"File->", ui2},
 	{"Controller->", ui3},
 	{"Display->", ui4},
-	{"Settings->", ui5},
-	{"Machine->", ui6},
+	{"Machine->", ui5},
+	{"Settings->", ui6},
 	{"Debug->", ui7},
 	{"About->", ui8},
 	{"Sleep", gbaSleep},
@@ -63,17 +63,17 @@ const MItem displayItems[] = {
 	{"Palette: ", paletteChange, getPaletteText},
 	{"Border: ", borderSet, getBorderText},
 };
+const MItem machineItems[] = {
+	{"Machine: ", machineSet, getMachineText},
+	{"Sound: ", soundSet, getSoundEnableText},
+};
 const MItem setItems[] = {
 	{"Speed: ", speedSet, getSpeedText},
-	{"Sound: ", soundSet, getSoundEnableText},
 	{"Autoload State: ", autoStateSet, getAutoStateText},
 	{"Autosave Settings: ", autoSettingsSet, getAutoSettingsText},
 	{"Autopause Game: ", autoPauseGameSet, getAutoPauseGameText},
 	{"EWRAM Overclock: ", ewramSet, getEWRAMText},
 	{"Autosleep: ", sleepSet, getSleepText},
-};
-const MItem machineItems[] = {
-	{"Machine: ", machineSet, getMachineText},
 };
 const MItem debugItems[] = {
 	{"Debug Output:", debugTextSet, getDebugText},
@@ -92,8 +92,8 @@ Menu menu1 = MENU_M("Main Menu", uiAuto, mainItems);
 const Menu menu2 = MENU_M("File Handling", uiAuto, fileItems);
 const Menu menu3 = MENU_M("Controller Settings", uiAuto, ctrlItems);
 const Menu menu4 = MENU_M("Display Settings", uiAuto, displayItems);
-const Menu menu5 = MENU_M("Other Settings", uiAuto, setItems);
-const Menu menu6 = MENU_M("Machine Settings", uiAuto, machineItems);
+const Menu menu5 = MENU_M("Machine Settings", uiAuto, machineItems);
+const Menu menu6 = MENU_M("Other Settings", uiAuto, setItems);
 const Menu menu7 = MENU_M("Debug", uiAuto, debugItems);
 const Menu menu8 = MENU_M("About", uiAbout, dummyItems);
 const Menu menu9 = MENU_M("Load Game", uiLoadGame, fnList9);
@@ -101,7 +101,6 @@ const Menu menu10 = MENU_M("Quit Emulator?", uiAuto, quitItems);
 
 const Menu *const menus[] = {&menu0, &menu1, &menu2, &menu3, &menu4, &menu5, &menu6, &menu7, &menu8, &menu9, &menu10 };
 
-u8 gGammaValue = 0;
 u8 gContrastValue = 0;
 u8 gBorderEnable = 1;
 
@@ -137,7 +136,7 @@ void uiNullNormal() {
 }
 
 void uiAbout() {
-	setupSubMenu("About");
+	setupSubMenuText();
 	drawText("A:        SV A Button", 3);
 	drawText("B:        SV B Button", 4);
 	drawText("Start:    SV Start Button", 5);

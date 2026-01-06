@@ -9,7 +9,6 @@ extern "C" {
 #define ENABLE_HEADPHONES	(1<<18)
 #define ALLOW_REFRESH_CHG	(1<<19)
 
-extern u8 gGammaValue;
 extern u8 gContrastValue;
 extern u8 gBorderEnable;
 

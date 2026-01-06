@@ -1,4 +1,4 @@
-# WasabiGBA V0.2.4
+# WasabiGBA V0.2.5
 
 <img align="right" width="220" src="./logo.png" />
 
@@ -100,6 +100,8 @@ Osman Celimli for docs, tests & help about the Supervision. <http://tailchao.com
 
 Fredrik Ahlström
 
-X/Twitter @TheRealFluBBa
+<https://bsky.app/profile/therealflubba.bsky.social>
 
 <https://www.github.com/FluBBaOfWard>
+
+X/Twitter @TheRealFluBBa

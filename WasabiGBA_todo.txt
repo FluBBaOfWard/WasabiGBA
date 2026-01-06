@@ -1,7 +1,7 @@
 WasabiGBA Todo
 
 GFX:
-	See SVVideo todo.
+	See KS5360 todo.
 
 GUI:
 	.
@@ -12,7 +12,6 @@ CPU:
 	See ARM6502 Todo.
 
 Sound:
-	Enable sound.
 	Setting for mono/stereo?
 	See KS5360 todo.
 

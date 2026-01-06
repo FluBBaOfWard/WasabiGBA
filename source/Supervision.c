@@ -15,8 +15,8 @@ int packState(void *statePtr) {
 	size += sizeof(svRAM);
 	memcpy(statePtr+size, svVRAM, sizeof(svVRAM));
 	size += sizeof(svVRAM);
-	size += svVideoSaveState(statePtr+size, &ks5360_0);
 	size += m6502SaveState(statePtr+size, &m6502_0);
+	size += svVideoSaveState(statePtr+size, &ks5360_0);
 	return size;
 }
 
@@ -26,16 +26,16 @@ void unpackState(const void *statePtr) {
 	size += sizeof(svRAM);
 	memcpy(svVRAM, statePtr+size, sizeof(svVRAM));
 	size += sizeof(svVRAM);
-	size += svVideoLoadState(&ks5360_0, statePtr+size);
 	size += m6502LoadState(&m6502_0, statePtr+size);
+	size += svVideoLoadState(&ks5360_0, statePtr+size);
 }
 
 int getStateSize() {
 	int size = 0;
 	size += sizeof(svRAM);
 	size += sizeof(svVRAM);
-	size += svVideoGetStateSize();
 	size += m6502GetStateSize();
+	size += svVideoGetStateSize();
 	return size;
 }
 

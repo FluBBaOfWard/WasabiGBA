@@ -66,10 +66,9 @@ soundInit:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-soundReset:
+soundReset:				;@ svvptr,=ks5360_0
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
-	ldr svvptr,=ks5360_0
 	bl svAudioReset			;@ sound
 	ldmfd sp!,{lr}
 	bx lr
@@ -121,7 +120,6 @@ vblSound2:
 	ldr r2,muteSound
 	cmp r2,#0
 	bne silenceMix
-	ldr svvptr,=ks5360_0
 	b svAudioMixer
 
 ;@----------------------------------------------------------------------------
@@ -151,7 +149,11 @@ soundLatch:
 	.byte 0
 	.space 2
 
-	.section .sbss
+#ifdef GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
+#else
+	.section .bss
+#endif
 	.align 2
 FREQTBL:
 	.space 1024*2

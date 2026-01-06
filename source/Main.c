@@ -49,11 +49,11 @@ void myVBlank(void) {
 //---------------------------------------------------------------------------------
 int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
+	enableExit = true;
 	irqInit();
 	irqSet(IRQ_VBLANK, myVBlank);
 	irqEnable(IRQ_VBLANK);
 
-	enableExit = true;
 	setupGraphics();
 	setupGUI();
 	getInput();
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 
 	while (1) {
 		waitVBlank();
-//		checkTimeOut();
+		checkTimeOut();
 		guiRunLoop();
 		if (powerIsOn && !pauseEmulation) {
 			run();

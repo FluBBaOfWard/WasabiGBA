@@ -1,12 +1,11 @@
 #ifdef __arm__
 
-#include "ARM6502/M6502mac.h"
+#include "ARM6502/M6502.i"
 #include "KS5360/KS5360.i"
-
-#define CYCLE_PSL (246*2)
 
 	.global waitMaskIn
 	.global waitMaskOut
+	.global ks5360_0
 	.global m6502_0
 
 	.global run
@@ -44,13 +43,6 @@ runStart:
 	and r3,r3,r0
 	str r0,joyClick
 
-//	tst r3,#0x04				;@ NDS Select?
-//	tsteq r3,#0x800				;@ NDS Y?
-//	ldrne r2,=systemMemory+0xB3
-//	ldrbne r2,[r2]
-//	tstne r2,#4					;@ Power button NMI enabled?
-//	and r0,r3,#0x04				;@ NDS Select?
-
 	bl refreshEMUjoypads
 
 	ldr m6502ptr,=m6502_0
@@ -61,7 +53,6 @@ svFrameLoop:
 ;@----------------------------------------------------------------------------
 	mov r0,#CYCLE_PSL
 	bl m6502RunXCycles
-	ldr svvptr,=ks5360_0
 	bl svDoScanline
 	cmp r0,#0
 	bne svFrameLoop
@@ -99,7 +90,6 @@ svStepLoop:
 ;@----------------------------------------------------------------------------
 	mov r0,#CYCLE_PSL
 	bl m6502RunXCycles
-	ldr svvptr,=ks5360_0
 	bl svDoScanline
 	cmp r0,#0
 	bne svStepLoop
@@ -138,16 +128,17 @@ cpuReset:					;@ Called by loadCart/resetGame
 	bx lr
 ;@----------------------------------------------------------------------------
 #ifdef NDS
-	.section .dtcm, "ax", %progbits			;@ For the NDS
+	.section .sbss				;@ This is DTCM on NDS with devkitARM
 #elif GBA
-	.section .iwram, "ax", %progbits		;@ For the GBA
+	.section .bss				;@ This is IWRAM on GBA with devkitARM
 #else
-	.section .text
+	.section .bss
 #endif
 	.align 2
 ;@----------------------------------------------------------------------------
 m6502_0:
-	.space m6502Size
+ks5360_0:
+	.space ks5360Size
 ;@----------------------------------------------------------------------------
 	.end
 #endif // #ifdef __arm__

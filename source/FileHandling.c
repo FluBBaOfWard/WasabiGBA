@@ -3,12 +3,13 @@
 
 #include "FileHandling.h"
 #include "Emubase.h"
-#include "Main.h"
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Shared/FileHelper.h"
+#include "Main.h"
 #include "Gui.h"
 #include "Cart.h"
+#include "cpu.h"
 #include "Gfx.h"
 #include "io.h"
 
@@ -27,13 +28,13 @@ int initSettings() {
 }
 
 int loadSettings() {
-	gGammaValue   = cfg.gammaValue & 0xF;
+	gGammaValue    = cfg.gammaValue & 0xF;
 	gContrastValue = (cfg.gammaValue>>4) & 0xF;
 	emuSettings = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
 	sleepTime   = cfg.sleepTime;
 	joyCfg      = (joyCfg&~0x400)|((cfg.controller&1)<<10);
 //	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
-	pauseEmulation = emuSettings & AUTOPAUSE_EMULATION;
+//	pauseEmulation = pauseEmulation && (emuSettings & AUTOPAUSE_EMULATION);
 
 	infoOutput("Settings loaded.");
 	return 0;
