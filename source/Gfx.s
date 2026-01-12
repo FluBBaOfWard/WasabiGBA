@@ -300,7 +300,6 @@ nothingNew:
 	ldmfd sp!,{r4-r8,svvptr,lr}
 	bx lr
 
-
 ;@----------------------------------------------------------------------------
 gfxRefresh:					;@ Called from C when changing scaling.
 	.type gfxRefresh STT_FUNC

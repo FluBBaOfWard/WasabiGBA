@@ -55,7 +55,7 @@ ROM_Space:
 ROM_SpaceEnd:
 #endif
 
-	.section .ewram,"ax"
+	.section .ewram, "ax", %progbits
 	.align 2
 ;@----------------------------------------------------------------------------
 machineInit: 					;@ Called from C
@@ -84,7 +84,7 @@ machineInit: 					;@ Called from C
 	ldmfd sp!,{r4-r11,lr}
 	bx lr
 
-	.section .ewram,"ax"
+	.section .ewram, "ax", %progbits
 	.align 2
 ;@----------------------------------------------------------------------------
 loadCart: 					;@ Called from C

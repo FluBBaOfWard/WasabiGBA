@@ -1,4 +1,4 @@
-# WasabiGBA V0.2.5
+# WasabiGBA V0.2.6
 
 <img align="right" width="220" src="./logo.png" />
 

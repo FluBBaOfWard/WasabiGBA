@@ -14,7 +14,7 @@
 #include "ARM6502/Version.h"
 #include "KS5360/Version.h"
 
-#define EMUVERSION "V0.2.5 2026-01-06"
+#define EMUVERSION "V0.2.6 2026-01-12"
 
 static void gammaChange(void);
 static void paletteChange(void);

@@ -1,6 +1,9 @@
 WasabiGBA revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+V0.2.6 - 2026-01-12 (FluBBa)
+	Added scrolling to menus.
+
 V0.2.5 - 2026-01-06 (FluBBa)
 	Fixed sound pitch of the two square waves.
 	Fixed amplitude of audio DMA channel.
