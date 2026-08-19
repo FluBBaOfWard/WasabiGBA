@@ -7,9 +7,9 @@
 
 	.global soundInit
 	.global soundReset
-	.global vblSound1
-	.global vblSound2
-	.global setMuteSoundGUI
+	.global soundSwapBuffers
+	.global soundRender
+	.global soundSetMuteGUI
 	.global setMuteSoundChip
 	.global soundMode
 
@@ -74,8 +74,8 @@ soundReset:				;@ svvptr,=ks5360_0
 	bx lr
 
 ;@----------------------------------------------------------------------------
-setMuteSoundGUI:
-	.type   setMuteSoundGUI STT_FUNC
+soundSetMuteGUI:
+	.type   soundSetMuteGUI STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldr r1,=pauseEmulation		;@ Output silence when emulation paused.
 	ldrb r0,[r1]
@@ -87,8 +87,8 @@ setMuteSoundChip:
 	strb r0,muteSoundChip
 	bx lr
 ;@----------------------------------------------------------------------------
-vblSound1:
-	.type   vblSound1 STT_FUNC
+soundSwapBuffers:
+	.type   soundSwapBuffers STT_FUNC
 ;@----------------------------------------------------------------------------
 	ldrb r0,soundMode			;@ if r0=0, no sound.
 	cmp r0,#0
@@ -107,8 +107,8 @@ vblSound1:
 
 	bx lr
 ;@----------------------------------------------------------------------------
-vblSound2:
-	.type   vblSound2 STT_FUNC
+soundRender:
+	.type   soundRender STT_FUNC
 ;@----------------------------------------------------------------------------
 	;@ update DMA buffer for PCM
 	ldrb r0,soundMode			;@ if r0=0, no sound.
@@ -161,4 +161,4 @@ WAVBUFFER:
 	.space MIX_LEN*2
 ;@----------------------------------------------------------------------------
 	.end
-#endif // #ifdef __arm__
+#endif // __arm__

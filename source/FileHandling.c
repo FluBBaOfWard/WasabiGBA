@@ -6,6 +6,8 @@
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Shared/FileHelper.h"
+#include "Shared/SRAMHandler.h"
+#include "Shared/AsmExtra.h"
 #include "Main.h"
 #include "Gui.h"
 #include "Cart.h"
@@ -13,40 +15,58 @@
 #include "Gfx.h"
 #include "io.h"
 
-static int selectedGame = 0;
-ConfigData cfg;
+/// Used for emulators or flashcarts to choose save type.
+const char *const sramTag = "SRAM_Vnnn";
+
+EWRAM_BSS int selectedGame = 0;
+EWRAM_BSS ConfigData cfg;
 
 //---------------------------------------------------------------------------------
-int initSettings() {
-	cfg.config = 0;
-	cfg.palette = 0;
-	cfg.gammaValue = 0x10;
-	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM | ALLOW_SPEED_HACKS;
-	cfg.sleepTime = 60*60*5;
-	cfg.controller = 0;					// Don't swap A/B
-	return 0;
+void applyConfigData(void) {
+	emuSettings    = cfg.emuSettings & ~EMUSPEED_MASK; // Clear speed setting.
+	gGammaValue    = cfg.gammaValue & 0xF;
+	gContrastValue = (cfg.gammaValue >> 4) & 0xF;
+	joyCfg         = (joyCfg & ~0x400) | ((cfg.controller & 1) << 10);
+	setSleepValue(emuSettings & AUTOSLEEP_MASK);
+}
+
+void updateConfigData(void) {
+	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
+	cfg.gammaValue  = (gGammaValue & 0xF) | (gContrastValue<<4);
+	cfg.controller  = (joyCfg >> 10) & 1;
+}
+
+void initSettings() {
+	memset(&cfg, 0, sizeof(ConfigData));
+	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOSLEEP_OFF | ALLOW_SPEED_HACKS;
+	cfg.gammaValue  = 0x10;
+
+	applyConfigData();
 }
 
 int loadSettings() {
-	gGammaValue    = cfg.gammaValue & 0xF;
-	gContrastValue = (cfg.gammaValue>>4) & 0xF;
-	emuSettings = cfg.emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
-	sleepTime   = cfg.sleepTime;
-	joyCfg      = (joyCfg&~0x400)|((cfg.controller&1)<<10);
-//	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
-//	pauseEmulation = pauseEmulation && (emuSettings & AUTOPAUSE_EMULATION);
-
-	infoOutput("Settings loaded.");
-	return 0;
+	if (readFile((u8 *)&cfg, sizeof(cfg), WSVID)) {
+		applyConfigData();
+		settingsChanged = false;
+		infoOutput("Settings loaded.");
+		return 0;
+	}
+	else {
+		updateConfigData();
+		infoOutput("No settings file found.");
+	}
+	return 1;
 }
 void saveSettings() {
-	strcpy(cfg.magic,"cfg");
-	cfg.gammaValue  = (gGammaValue & 0xF) | (gContrastValue<<4);
-	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK;	// Clear speed setting.
-	cfg.sleepTime   = sleepTime;
-	cfg.controller  = (joyCfg>>10)&1;
-//	strlcpy(cfg.currentPath, currentDir, sizeof(currentDir));
-	infoOutput("Settings saved.");
+	updateConfigData();
+
+	if (writeFile((u8 *)&cfg, sizeof(cfg), WSVID, "Config")) {
+		settingsChanged = false;
+		infoOutput("Settings saved.");
+	}
+	else {
+		infoOutput("Could not save settings file.");
+	}
 }
 
 int loadNVRAM() {
@@ -57,35 +77,41 @@ void saveNVRAM() {
 }
 
 void loadState(void) {
-//	unpackState(testState);
-	infoOutput("Loaded state.");
+	if (getStateSize() < 0x10000
+		&& quickLoad()) {
+		infoOutput("Loaded State.");
+	}
 }
 void saveState(void) {
-//	packState(testState);
-	infoOutput("Saved state.");
+	if (getStateSize() < 0x10000
+		&& quickSave()) {
+		infoOutput("Saved State.");
+	}
 }
 
 //---------------------------------------------------------------------------------
 bool loadGame(const RomHeader *rh) {
 	if (rh) {
-		gRomSize = rh->filesize;
-		romSpacePtr = (const u8 *)rh + sizeof(RomHeader);
-		selectedGame = selected;
-		checkMachine();
-		setEmuSpeed(0);
-		loadCart();
-		gameInserted = true;
-		if (emuSettings & AUTOLOAD_NVRAM) {
-			loadNVRAM();
-		}
-		if (emuSettings & AUTOLOAD_STATE) {
-			loadState();
-		}
-		powerIsOn = true;
-		closeMenu();
-		return false;
+		return loadROM(rh->romData, rh->filesize);
 	}
 	return true;
+}
+
+//---------------------------------------------------------------------------------
+bool loadROM(const u8 *rom, int size) {
+	gRomSize = size;
+	romSpacePtr = rom;
+	selectedGame = selected;
+	checkMachine();
+	setEmuSpeed(0);
+	loadCart();
+	gameInserted = true;
+	if (emuSettings & AUTOLOAD_STATE) {
+		loadState();
+	}
+	powerIsOn = true;
+	closeMenu();
+	return false;
 }
 
 void selectGame() {
@@ -95,6 +121,14 @@ void selectGame() {
 	if (loadGame(rh)) {
 		backOutOfMenu();
 	}
+}
+
+void viewSStates() {
+	pauseEmulation = true;
+	ui13();
+	skipScroll();
+	loadStateMenu();
+	backOutOfMenu();
 }
 
 void checkMachine() {

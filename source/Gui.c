@@ -11,10 +11,10 @@
 #include "Sound.h"
 #include "io.h"
 #include "cpu.h"
-#include "ARM6502/Version.h"
+#include "KS5360/ARM6502/Version.h"
 #include "KS5360/Version.h"
 
-#define EMUVERSION "V0.2.6 2026-01-12"
+#define EMUVERSION "V0.2.6 2026-08-19"
 
 static void gammaChange(void);
 static void paletteChange(void);
@@ -49,6 +49,7 @@ const MItem fileItems[] = {
 	{"Load Game->", selectGame},
 	{"Load State", loadState},
 	{"Save State", saveState},
+	{"Manage States->", viewSStates},
 	{"Save Settings", saveSettings},
 	{"Reset Game", resetGame},
 };
@@ -96,10 +97,11 @@ const Menu menu5 = MENU_M("Machine Settings", uiAuto, machineItems);
 const Menu menu6 = MENU_M("Other Settings", uiAuto, setItems);
 const Menu menu7 = MENU_M("Debug", uiAuto, debugItems);
 const Menu menu8 = MENU_M("About", uiAbout, dummyItems);
-const Menu menu9 = MENU_M("Load Game", uiLoadGame, fnList9);
+const Menu menu9 = MENU_M("Load Game", setupSubMenuText, fnList9);
 const Menu menu10 = MENU_M("Quit Emulator?", uiAuto, quitItems);
+const Menu menu13 = MENU_M("Delete States", setupSubMenuText, dummyItems);
 
-const Menu *const menus[] = {&menu0, &menu1, &menu2, &menu3, &menu4, &menu5, &menu6, &menu7, &menu8, &menu9, &menu10 };
+const Menu *const menus[] = {&menu0, &menu1, &menu2, &menu3, &menu4, &menu5, &menu6, &menu7, &menu8, &menu9, &menu10, &menu13, &menu13, &menu13 };
 
 u8 gContrastValue = 0;
 u8 gBorderEnable = 1;
@@ -110,8 +112,7 @@ const char *const palTxt[]   = {"Green", "Black & White", "Red", "Blue", "Classi
 
 /// This is called at the start of the emulator
 void setupGUI() {
-	emuSettings = AUTOPAUSE_EMULATION;
-//	keysSetRepeat(25, 4);	// Delay, repeat.
+	setRepeat(25, 4);	// Delay, repeat.
 	menu1.itemCount = ARRSIZE(mainItems) - (enableExit?0:1);
 	closeMenu();
 }
@@ -148,8 +149,8 @@ void uiAbout() {
 	drawText("ARM6502    " ARM6502VERSION, 19);
 }
 
-void uiLoadGame() {
-	setupSubMenuText();
+void ui13() {
+	enterMenu(13);
 }
 
 void nullUINormal(int key) {

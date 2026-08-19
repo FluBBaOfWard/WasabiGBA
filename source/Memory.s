@@ -1,6 +1,6 @@
 #ifdef __arm__
 
-#include "ARM6502/M6502mac.h"
+#include "KS5360/KS5360.i"
 
 	.global empty_R
 	.global empty_W
@@ -103,4 +103,4 @@ mem6502R7:					;@ Mem read ($E000-$FFFF)
 
 ;@----------------------------------------------------------------------------
 	.end
-#endif // #ifdef __arm__
+#endif // __arm__

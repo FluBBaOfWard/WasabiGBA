@@ -14,6 +14,17 @@
 		9C1A755328DB2873005F342E /* Supervision.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Supervision.h; sourceTree = "<group>"; };
 		9C1A755828E02EB6005F342E /* FileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileHelper.h; sourceTree = "<group>"; };
 		9C1A755928E02EB6005F342E /* FileHelper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = FileHelper.c; sourceTree = "<group>"; };
+		9C2138B130362BF500808645 /* CONTRIBUTION.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTION.md; sourceTree = "<group>"; };
+		9C2138B230362BF500808645 /* COPYING */ = {isa = PBXFileReference; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
+		9C2138B330362BF500808645 /* ECL_common.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ECL_common.c; sourceTree = "<group>"; };
+		9C2138B430362BF500808645 /* ECL_config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECL_config.h; sourceTree = "<group>"; };
+		9C2138B530362BF500808645 /* ECL_JH_States.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECL_JH_States.h; sourceTree = "<group>"; };
+		9C2138B630362BF500808645 /* ECL_NanoLZ.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECL_NanoLZ.h; sourceTree = "<group>"; };
+		9C2138B730362BF500808645 /* ECL_NanoLZ.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ECL_NanoLZ.c; sourceTree = "<group>"; };
+		9C2138B830362BF500808645 /* ECL_NanoLZ_schemes_inline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECL_NanoLZ_schemes_inline.h; sourceTree = "<group>"; };
+		9C2138B930362BF500808645 /* ECL_utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECL_utils.h; sourceTree = "<group>"; };
+		9C2138BB30362C0700808645 /* SRAMHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SRAMHandler.h; sourceTree = "<group>"; };
+		9C2138BC30362C0700808645 /* SRAMHandler.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SRAMHandler.c; sourceTree = "<group>"; };
 		9C4C21DE26E54754007D0280 /* FileHandling.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FileHandling.c; sourceTree = "<group>"; };
 		9C4C21E126E54754007D0280 /* FileHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandling.h; sourceTree = "<group>"; };
 		9C50820525D45A9A00A8E1BA /* Cart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cart.h; sourceTree = "<group>"; };
@@ -28,6 +39,10 @@
 		9C50821025D45A9B00A8E1BA /* Gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gui.h; sourceTree = "<group>"; };
 		9C50821125D45A9B00A8E1BA /* Gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gfx.h; sourceTree = "<group>"; };
 		9C715146265661CE0084BE99 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Memory.h; sourceTree = "<group>"; };
+		9C7556F42F797A5900757855 /* EmuMenu.i */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c.preprocessed; path = EmuMenu.i; sourceTree = "<group>"; };
+		9C7556F52F797A5900757855 /* FlashCart.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = FlashCart.s; sourceTree = "<group>"; };
+		9C7556F62F797A5900757855 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		9C7CC88C2F6F160B00A49004 /* Builder.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = Builder.html; sourceTree = "<group>"; };
 		9CBC0C8E26DD7C2A0039D17E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9CC013FC2668FDD9005714F7 /* Emubase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emubase.h; sourceTree = "<group>"; };
 		9CDABAA728D5DE26005B888E /* EQU_WATARA.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = EQU_WATARA.txt; sourceTree = "<group>"; };
@@ -82,6 +97,7 @@
 				9CDABAAF28D5DFA4005B888E /* WasabiGBA_todo.txt */,
 				A4AA02141B04077F0043E4D4 /* History.txt */,
 				9CBC0C8E26DD7C2A0039D17E /* README.md */,
+				9C7CC88C2F6F160B00A49004 /* Builder.html */,
 				A42D0269205FEC6E00515C72 /* Docs */,
 				746D78E014ED9A6D00CC738F /* makefile */,
 				A48CC0251618E65200465E20 /* source */,
@@ -97,6 +113,22 @@
 				746D78E114ED9A8400CC738F /* Makefile */,
 			);
 			name = makefile;
+			sourceTree = "<group>";
+		};
+		9C2138BA30362BF500808645 /* ECL */ = {
+			isa = PBXGroup;
+			children = (
+				9C2138B130362BF500808645 /* CONTRIBUTION.md */,
+				9C2138B230362BF500808645 /* COPYING */,
+				9C2138B330362BF500808645 /* ECL_common.c */,
+				9C2138B430362BF500808645 /* ECL_config.h */,
+				9C2138B530362BF500808645 /* ECL_JH_States.h */,
+				9C2138B630362BF500808645 /* ECL_NanoLZ.h */,
+				9C2138B730362BF500808645 /* ECL_NanoLZ.c */,
+				9C2138B830362BF500808645 /* ECL_NanoLZ_schemes_inline.h */,
+				9C2138B930362BF500808645 /* ECL_utils.h */,
+			);
+			path = ECL;
 			sourceTree = "<group>";
 		};
 		9C42403D27E2262D0042454B /* graphics */ = {
@@ -153,15 +185,21 @@
 			isa = PBXGroup;
 			children = (
 				9C42403D27E2262D0042454B /* graphics */,
+				9C2138BA30362BF500808645 /* ECL */,
 				9CDABAB428D5E06D005B888E /* README.md */,
+				9C7556F62F797A5900757855 /* LICENSE.txt */,
 				9CDABAAA28D5DF3C005B888E /* gba_asm.h */,
 				9CDABAB328D5E06C005B888E /* EmuSettings.h */,
 				9CDABAB128D5E06C005B888E /* EmuMenu.h */,
+				9C7556F42F797A5900757855 /* EmuMenu.i */,
 				9CDABAB528D5E06D005B888E /* EmuMenu.c */,
 				9C1A755828E02EB6005F342E /* FileHelper.h */,
 				9C1A755928E02EB6005F342E /* FileHelper.c */,
+				9C2138BB30362C0700808645 /* SRAMHandler.h */,
+				9C2138BC30362C0700808645 /* SRAMHandler.c */,
 				9CDABAB028D5E06C005B888E /* AsmExtra.h */,
 				9CDABAB228D5E06C005B888E /* AsmExtra.s */,
+				9C7556F52F797A5900757855 /* FlashCart.s */,
 			);
 			path = Shared;
 			sourceTree = "<group>";

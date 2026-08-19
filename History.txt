@@ -1,8 +1,12 @@
 WasabiGBA revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.2.6 - 2026-01-12 (FluBBa)
+V0.2.6 - 2026-08-19 (FluBBa)
+	Added save state support.
 	Added scrolling to menus.
+	Added HTML builder.
+	Added PogoShell support.
+	Fixed exit from emulator.
 
 V0.2.5 - 2026-01-06 (FluBBa)
 	Fixed sound pitch of the two square waves.
@@ -11,12 +15,12 @@ V0.2.5 - 2026-01-06 (FluBBa)
 	Broke savestates compatibility.
 
 V0.2.4 - 2024-04-09 (FluBBa)
-	(GBA) Added sound.
+	Added sound.
 	Optimized cpu core.
 
 V0.2.3 - 2022-10-13 (FluBBa)
 	Added Quit Emulator menu item.
-	Added Overclock EWRAM menu item.
+	Added EWRAM Overclock menu item.
 
 V0.2.2 - 2022-10-06 (FluBBa)
 	Added new debug menu.

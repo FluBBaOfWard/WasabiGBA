@@ -18,6 +18,7 @@ extern int sramSize;
 
 extern u8 svRAM[0x2000];
 extern u8 svVRAM[0x2000];
+extern u8 SCRATCH_BUFF[0x20000];
 extern const u8 *romSpacePtr;
 
 void machineInit(void);
@@ -27,4 +28,4 @@ void loadCart(void);
 } // extern "C"
 #endif
 
-#endif // CART_HEADER
+#endif // !CART_HEADER

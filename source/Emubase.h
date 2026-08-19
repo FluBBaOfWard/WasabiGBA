@@ -7,20 +7,23 @@ extern "C" {
 
 #define WSVID 0x1A565357			// "WSV",0x1A - WataraSuperVision
 
+#define ALLOW_SPEED_HACKS	(1<<17)
+#define ENABLE_HEADPHONES	(1<<18)
+
 typedef struct {
-	const u32 identifier;
+	const u32 identifier;		// WSVID
 	const u32 filesize;
 	const u32 flags;
 	const u32 undefined;
-	const u32 bios;			// bit 0 = bios file.
+	const u32 bios;				// bit 0 = bios file.
 	const u32 reserved[3];
 	const char name[32];
+	const u8 romData[];
 } RomHeader;
 
 typedef struct {				//(config struct)
-	char magic[4];				//="CFG",0
 	int emuSettings;
-	int sleepTime;				// autoSleepTime
+	int unused;					// unused
 	u8 gammaValue;				// From gfx.s
 	u8 config;					// From cart.s
 	u8 controller;				// From io.s
@@ -37,4 +40,4 @@ typedef struct {				//(config struct)
 } // extern "C"
 #endif
 
-#endif // EMUBASE
+#endif // !EMUBASE

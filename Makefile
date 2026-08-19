@@ -23,10 +23,11 @@ include $(DEVKITARM)/gba_rules
 # GRAPHICS is a list of directories containing files to be processed by grit
 # All directories are relative to this makefile
 #---------------------------------------------------------------------------------
-TARGET		:= $(notdir $(CURDIR))
-BUILD		:= build
+TARGET		:=	$(notdir $(CURDIR))
+BUILD		:=	build
 SOURCES		:=	source \
 				source/Shared \
+				source/Shared/ECL \
 				source/KS5360 \
 				source/KS5360/ARM6502
 DATA		:=	data
@@ -55,12 +56,12 @@ LDFLAGS	=	-g $(ARCH) -Wl,-Map,$(notdir $@).map
 #---------------------------------------------------------------------------------
 # path to tools - this can be deleted if you set the path to the toolchain in windows
 #---------------------------------------------------------------------------------
-export PATH		:=	$(DEVKITARM)/bin:$(PATH)
+export PATH	:=	$(DEVKITARM)/bin:$(PATH)
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:= -lgba
+LIBS	:=	-lgba
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -147,7 +148,6 @@ $(OUTPUT).gba	:	$(OUTPUT).elf
 
 $(OUTPUT).elf	:	$(OFILES)
 
-
 #---------------------------------------------------------------------------------
 # The bin2o rule should be copied and modified
 # for each extension used in the data directories
@@ -160,7 +160,6 @@ $(OUTPUT).elf	:	$(OFILES)
 #---------------------------------------------------------------------------------
 	@echo $(notdir $<)
 	@$(bin2o)
-
 
 #---------------------------------------------------------------------------------
 %.s %.h	: %.png %.grit

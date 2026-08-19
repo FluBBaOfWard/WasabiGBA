@@ -51,8 +51,9 @@ int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 	enableExit = true;
 	irqInit();
+	irqEnable(IRQ_VBLANK | IRQ_KEYPAD);
+	showSplash(getSplashScreen(WSVID));
 	irqSet(IRQ_VBLANK, myVBlank);
-	irqEnable(IRQ_VBLANK);
 
 	setupGraphics();
 	setupGUI();
@@ -61,20 +62,29 @@ int main(int argc, char **argv) {
 	bool fsOk = initFileHelper(WSVID);
 	loadSettings();
 	machineInit();
-	loadCart();
 	setupEmuBackground();
 	if (fsOk) {
 		const RomHeader *rh = findRom(0);
 		loadGame(rh);
 	}
+	else {
+		const PogoFile *pogoFile = getPogoFile();
+		if (pogoFile != NULL) {
+			loadROM(pogoFile->romPtr, pogoFile->size);
+		}
+		else {
+			infoOutput("No roms found.");
+			loadCart();
+		}
+	}
 
 	while (1) {
 		waitVBlank();
-		checkTimeOut();
 		guiRunLoop();
 		if (powerIsOn && !pauseEmulation) {
 			run();
 		}
+		checkTimeOut();
 	}
 }
 

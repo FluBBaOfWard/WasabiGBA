@@ -1,10 +1,9 @@
 #ifdef __arm__
 
-//#define EMBEDDED_ROM
-
 #include "Shared/gba_asm.h"
 #include "KS5360/KS5360.i"
-#include "ARM6502/M6502.i"
+
+//#define EMBEDDED_ROM
 
 	.global romSpacePtr
 	.global MEMMAPTBL_
@@ -12,6 +11,7 @@
 	.global svRAM
 	.global svVRAM
 	.global DIRTYTILES
+	.global SCRATCH_BUFF
 	.global gRomSize
 	.global maxRomSize
 	.global romMask
@@ -25,7 +25,6 @@
 
 	.global machineInit
 	.global loadCart
-	.global romNum
 	.global cartFlags
 	.global romStart
 	.global bankSwitchCart
@@ -53,7 +52,7 @@ ROM_Space:
 //	.incbin "roms/WaJuke.sv"
 //	.incbin "roms/WaTest.sv"
 ROM_SpaceEnd:
-#endif
+#endif // EMBEDDED_ROM
 
 	.section .ewram, "ax", %progbits
 	.align 2
@@ -61,7 +60,7 @@ ROM_SpaceEnd:
 machineInit: 					;@ Called from C
 	.type   machineInit STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r11,lr}
+	stmfd sp!,{svvptr,lr}
 	ldr svvptr,=ks5360_0
 #ifdef EMBEDDED_ROM
 	ldr r0,=romSize
@@ -73,7 +72,7 @@ machineInit: 					;@ Called from C
 	ldr r0,=powerIsOn
 	mov r1,#1
 	strb r1,[r0]
-#endif
+#endif // EMBEDDED_ROM
 
 	bl memoryMapInit
 	bl gfxInit
@@ -81,7 +80,7 @@ machineInit: 					;@ Called from C
 	bl soundInit
 	bl cpuInit
 
-	ldmfd sp!,{r4-r11,lr}
+	ldmfd sp!,{svvptr,lr}
 	bx lr
 
 	.section .ewram, "ax", %progbits
@@ -90,7 +89,7 @@ machineInit: 					;@ Called from C
 loadCart: 					;@ Called from C
 	.type   loadCart STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r4-r11,lr}
+	stmfd sp!,{r4,r5,svvptr,lr}
 	ldr svvptr,=ks5360_0
 
 	ldr r0,romSize
@@ -119,7 +118,7 @@ loadCart: 					;@ Called from C
 	bl soundReset
 	bl cpuReset
 
-	ldmfd sp!,{r4-r11,lr}
+	ldmfd sp!,{r4,r5,svvptr,lr}
 	bx lr
 ;@----------------------------------------------------------------------------
 clearDirtyTiles:
@@ -177,12 +176,12 @@ resetCartridgeBanks:
 	ldr r4,romSpacePtr
 	ldr r5,romSize
 	cmp r5,#0x10000
-	bhi noRomReloc
-	mov r1,r4
-	ldr r4,=smallRomSpace
-	mov r0,r4
-	mov r2,#0x10000
-	bl memcpy
+//	bhi noRomReloc
+//	mov r1,r4
+//	ldr r4,=smallRomSpace
+//	mov r0,r4
+//	mov r2,#0x10000
+//	bl memcpy
 noRomReloc:
 
 	ldr r0,=bankPointers
@@ -251,8 +250,6 @@ BankSwitchCDEF_W:			;@ 0xC000-0xFFFF
 
 ;@----------------------------------------------------------------------------
 
-romNum:
-	.long 0						;@ romnumber
 romInfo:						;@
 emuFlags:
 	.byte 0						;@ emuflags      (label this so Gui.c can take a peek) see EmuSettings.h for bitfields
@@ -303,8 +300,10 @@ svVRAM:
 	.space 0x2000
 DIRTYTILES:
 	.space 0x200
+SCRATCH_BUFF:
 smallRomSpace:					;@ For roms that are 64kB or smaller
+	.space 0x10000
 	.space 0x10000
 ;@----------------------------------------------------------------------------
 	.end
-#endif // #ifdef __arm__
+#endif // __arm__

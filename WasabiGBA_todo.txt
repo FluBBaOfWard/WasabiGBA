@@ -1,6 +1,11 @@
 WasabiGBA Todo
 
 GFX:
+	Fix copy of roms to EWRAM after save handling.
+	CRC collision for save states.
+	Add blitter emulation for TV version.
+	Add color support for TV version.
+	Add per line scroll support.
 	See KS5360 todo.
 
 GUI:
@@ -12,6 +17,7 @@ CPU:
 	See ARM6502 Todo.
 
 Sound:
+	DAC is only 4bit.
 	Setting for mono/stereo?
 	See KS5360 todo.
 

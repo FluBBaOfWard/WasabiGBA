@@ -6,11 +6,11 @@ This is a Watara/QuickShot Supervision emulator for the Nintendo GBA.
 
 ## How to use
 
-There is no builder included in the release yet.
-The header is defined in Emubase.h, it's 64 bytes long, the size field is in
-little endian, the 32bit id is 0x1A565357 (LE).
-The name field can be 31 bytes plus a terminating zero.
-There is an example header file included, "Supervision.header".
+You can use the [HTML Builder](https://flubbaofward.github.io/WasabiGBA/Builder.html)
+to add roms (even zip files). The header is defined in Emubase.h, it's 64 bytes
+long, the size field is in little endian, the 32bit id is 0x1A565357 (LE). The
+name field can be 31 bytes plus a terminating zero. There is an example header
+file included, "Supervision.header".
 
 When the emulator starts, you press L+R to open up the menu.
 Now you can use the cross to navigate the menus, A to select an option,
@@ -28,7 +28,8 @@ B to go back a step.
 
 ### Controller
 
-* Autofire: Select if you want autofire.
+* B Autofire: Select if you want autofire on button B.
+* A Autofire: Select if you want autofire on button A.
 * Swap A/B: Swap which GBA button is mapped to which SV button.
 
 ### Display
@@ -37,12 +38,16 @@ B to go back a step.
 * Contrast: Change palette contrast.
 * Palette: Here you can select between different palettes.
 
+### Machine Settings
+
+* Machine: Select the emulated machine.
+
 ### Settings
 
 * Speed: Switch between speed modes.
   * Normal: Game runs at it's normal speed.
   * 200%: Game runs at double speed.
-  * Max: Games can run up to 4 times normal speed (might change).
+  * Max: Games can run up to 4 times normal speed.
   * 50%: Game runs at half speed.
 * Sound: Turn on/off sound.
 * Autoload State: Toggle Savestate autoloading. Automagically load the
@@ -50,14 +55,10 @@ B to go back a step.
 * Autosave Settings: This will save settings when leaving menu if any changes
  are made.
 * Autopause Game: Toggle if the game should pause when opening the menu.
-* Overclock EWRAM: Changes the waitstates on EWRAM between 2 and 1, might
- damage your GBA and uses more power, around 10% speedgain. Doesn't work on
- Gameboy Micro. Use at your own risk!
+* EWRAM Overclock: Changes the waitstates on EWRAM between 2 and 1, uses more
+ power, around 10% speedgain. Doesn't work on Gameboy Micro, might damage your
+ GBA. Use at your own risk!
 * Autosleep: Change the autosleep time, also see Sleep.
-
-### Machine Settings
-
-* Machine: Select the emulated machine.
 
 ### Debug
 
