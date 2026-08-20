@@ -18,7 +18,7 @@ void gfxInit(void);
 void vblIrqHandler(void);
 void paletteTxAll(void);
 void monoPalInit(void);
-void paletteInit(u8 gammaVal);
+void paletteInit(u8 gammaVal, u8 contrastVal);
 void updateLCDRefresh(void);
 void gfxRefresh(void);
 

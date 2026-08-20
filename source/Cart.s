@@ -184,13 +184,13 @@ resetCartridgeBanks:
 //	bl memcpy
 noRomReloc:
 
-	ldr r0,=bankPointers
+	ldr r6,=bankPointers
 	ldrb r2,romMask
 	mov r1,#0x1F
 bankLoop:
 	and r3,r2,r1
 	add r3,r4,r3,lsl#14
-	str r3,[r0,r1,lsl#2]
+	str r3,[r6,r1,lsl#2]
 	subs r1,r1,#1
 	bpl bankLoop
 
@@ -199,14 +199,13 @@ bankLoop:
 	sub r1,r1,r2
 	ldr r0,=BG_GFX+0x10000		;@ Sprite VRAM used for 2 last banks
 	str r0,[r6,#30*4]
+	add r3,r0,#0x4000
+	str r3,[r6,#31*4]
+	ldrb r4,romMask
+	str r3,[r6,r4,lsl#2]
+	sub r4,r4,#1
+	str r3,[r6,r4,lsl#2]
 	bl memcpy
-	ldr r0,=BG_GFX+0x14000
-	str r0,[r6,#31*4]
-	ldrb r2,romMask
-	str r0,[r6,r2,lsl#2]
-	ldr r0,[r6,#30*4]
-	sub r2,r2,#1
-	str r0,[r6,r2,lsl#2]
 
 	mov r1,#0
 	bl BankSwitch89AB_W

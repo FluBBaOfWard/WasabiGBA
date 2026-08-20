@@ -6,15 +6,17 @@ This is a Watara/QuickShot Supervision emulator for the Nintendo GBA.
 
 ## How to use
 
-You can use the [HTML Builder](https://flubbaofward.github.io/WasabiGBA/Builder.html)
-to add roms (even zip files). The header is defined in Emubase.h, it's 64 bytes
-long, the size field is in little endian, the 32bit id is 0x1A565357 (LE). The
-name field can be 31 bytes plus a terminating zero. There is an example header
-file included, "Supervision.header".
+Use the [HTML Builder](https://flubbaofward.github.io/WasabiGBA/Builder.html)
+to add roms (even zip files).
+
+The header is defined in Emubase.h, it's 64 bytes long, the size field is in
+little endian, the 32bit id is 0x1A565357 (LE). The name field can be 31 bytes
+plus a terminating zero. There is an example header file included,
+"Supervision.header".
 
 When the emulator starts, you press L+R to open up the menu.
-Now you can use the cross to navigate the menus, A to select an option,
-B to go back a step.
+Now you can use the cross to navigate the menus, A to select an option, B to
+go back a step.
 
 ## Menu
 
@@ -23,8 +25,9 @@ B to go back a step.
 * Load Game: Select a game to load.
 * Load State: Load a previously saved state of the currently running game.
 * Save State: Save a state of the currently running game.
+* Manage States: Delete unwanted state files.
 * Save Settings: Save the current settings.
-* Reset Game: Reset the currently running game.
+* Reset Console: Reset the currently running game.
 
 ### Controller
 
@@ -50,7 +53,7 @@ B to go back a step.
   * Max: Games can run up to 4 times normal speed.
   * 50%: Game runs at half speed.
 * Sound: Turn on/off sound.
-* Autoload State: Toggle Savestate autoloading. Automagically load the
+* Autoload State: Toggle Savestate autoloading. Automatically load the
  savestate associated with the selected game.
 * Autosave Settings: This will save settings when leaving menu if any changes
  are made.

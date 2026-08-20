@@ -25,6 +25,8 @@
 		9C2138B930362BF500808645 /* ECL_utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECL_utils.h; sourceTree = "<group>"; };
 		9C2138BB30362C0700808645 /* SRAMHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SRAMHandler.h; sourceTree = "<group>"; };
 		9C2138BC30362C0700808645 /* SRAMHandler.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = SRAMHandler.c; sourceTree = "<group>"; };
+		9C2138BD30376DFC00808645 /* TVLink.grit */ = {isa = PBXFileReference; lastKnownFileType = text; path = TVLink.grit; sourceTree = "<group>"; };
+		9C2138BE30376DFC00808645 /* TVLink.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TVLink.png; sourceTree = "<group>"; };
 		9C4C21DE26E54754007D0280 /* FileHandling.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FileHandling.c; sourceTree = "<group>"; };
 		9C4C21E126E54754007D0280 /* FileHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandling.h; sourceTree = "<group>"; };
 		9C50820525D45A9A00A8E1BA /* Cart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cart.h; sourceTree = "<group>"; };
@@ -87,6 +89,8 @@
 			children = (
 				9CDABAC828D5E224005B888E /* SVBorder.grit */,
 				9CDABAC928D5E224005B888E /* SVBorder.png */,
+				9C2138BD30376DFC00808645 /* TVLink.grit */,
+				9C2138BE30376DFC00808645 /* TVLink.png */,
 			);
 			path = graphics;
 			sourceTree = "<group>";

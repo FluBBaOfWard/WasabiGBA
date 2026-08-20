@@ -3,6 +3,7 @@
 
 #include "Supervision.h"
 #include "SVBorder.h"
+#include "TVLink.h"
 #include "Gui.h"
 #include "Cart.h"
 #include "Gfx.h"
@@ -58,12 +59,12 @@ void setupSVBorderPalette() {
 }
 
 void setupTVBackground() {
-//	decompress(TVLinkTiles, BG_TILE_RAM(1), LZ77Vram);
-//	decompress(TVLinkMap, BG_MAP_RAM(2), LZ77Vram);
+	LZ77UnCompVram(TVLinkTiles, TILE_BASE_ADR(1));
+	LZ77UnCompVram(TVLinkMap, MAP_BASE_ADR(2));
 }
 
 void setupTVBorderPalette() {
-//	setupBorderPalette(TVLinkPal, TVLinkPalLen);
+	setupBorderPalette(TVLinkPal, TVLinkPalLen);
 }
 
 void setupEmuBackground() {

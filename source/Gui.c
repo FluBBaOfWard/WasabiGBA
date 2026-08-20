@@ -14,7 +14,7 @@
 #include "KS5360/ARM6502/Version.h"
 #include "KS5360/Version.h"
 
-#define EMUVERSION "V0.2.6 2026-08-19"
+#define EMUVERSION "V0.2.6 2026-08-20"
 
 static void gammaChange(void);
 static void paletteChange(void);
@@ -51,7 +51,7 @@ const MItem fileItems[] = {
 	{"Save State", saveState},
 	{"Manage States->", viewSStates},
 	{"Save Settings", saveSettings},
-	{"Reset Game", resetGame},
+	{"Reset Console", resetGame},
 };
 const MItem ctrlItems[] = {
 	{"B Autofire: ", autoBSet, getAutoBText},
@@ -210,7 +210,7 @@ const char *getSwapABText() {
 /// Change gamma (brightness)
 void gammaChange() {
 	gammaSet();
-	paletteInit(gGammaValue);
+	paletteInit(gGammaValue, gContrastValue);
 //	setupEmuBorderPalette();
 	setupMenuPalette();
 }
@@ -219,7 +219,7 @@ void gammaChange() {
 void contrastSet() {
 	gContrastValue++;
 	if (gContrastValue > 4) gContrastValue = 0;
-	paletteInit(gGammaValue);
+	paletteInit(gGammaValue, gContrastValue);
 //	setupEmuBorderPalette();
 	settingsChanged = true;
 }
@@ -233,7 +233,7 @@ void paletteChange() {
 		gPaletteBank = 0;
 	}
 	monoPalInit();
-	paletteInit(gGammaValue);
+	paletteInit(gGammaValue, gContrastValue);
 	settingsChanged = true;
 }
 const char *getPaletteText() {

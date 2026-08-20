@@ -99,9 +99,9 @@ bool loadGame(const RomHeader *rh) {
 
 //---------------------------------------------------------------------------------
 bool loadROM(const u8 *rom, int size) {
+	selectedGame = selected;
 	gRomSize = size;
 	romSpacePtr = rom;
-	selectedGame = selected;
 	checkMachine();
 	setEmuSpeed(0);
 	loadCart();

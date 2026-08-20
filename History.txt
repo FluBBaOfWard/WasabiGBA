@@ -1,11 +1,12 @@
 WasabiGBA revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-V0.2.6 - 2026-08-19 (FluBBa)
+V0.2.6 - 2026-08-20 (FluBBa)
 	Added save state support.
 	Added scrolling to menus.
 	Added HTML builder.
 	Added PogoShell support.
+	Added TV Link background.
 	Fixed exit from emulator.
 
 V0.2.5 - 2026-01-06 (FluBBa)
